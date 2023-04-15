@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>Label</key>
+		<string>order_btc</string>
+		<key>ProgramArguments</key>
+		<array>
+			<string>/path/to/a.out</string>
+		</array>
+		<key>StartInterval</key>
+		<integer>60</integer>
+		<key>StandardOutPath</key>
+		<string>/path/to/macos/test.out</string>
+		<key>StandardErrorPath</key>
+		<string>/path/to/macos/test.err</string>
+	</dict>
+</plist>
