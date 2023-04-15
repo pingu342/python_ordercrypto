@@ -31,7 +31,7 @@ crontabを使う場合
 
     $ crontab -e
     
-    */1 * * * * /path/to/python_ordercrypto/a.out >> /path/to/python_ordercrypto/out  の行を追加
+    */1 * * * * /path/to/python_ordercrypto/order.sh >> /path/to/python_ordercrypto/out  の行を追加
     
     $ sudo /etc/init.d/cron restart
 
@@ -63,11 +63,17 @@ orders.txtを参照してbitbankccに問い合わせして上記を出力する�
 
 購入状況をブラウザで確認したいとき
 
+    $ ./start_server.sh
+    
+`http://<ip_addr>:5555/cgi-bin/balance.py` にアクセス
+
+exitしてもサーバを永続実行させためscreenを使う場合
+
     $ sudo apt install screen
     $ screen
     $ cd /path/to/python_ordercrypto
     $ ./start_server.sh
     [ctrl] + a
     d
-
-`http://<ip_addr>:5555/cgi-bin/balance.py` にアクセス
+    $ exit
+    
