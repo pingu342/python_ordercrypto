@@ -9,7 +9,7 @@ DIR = join(dirname(__file__), '')
 def matching_order(file_path, order_id):
     order_found = False
 
-    # $B%U%!%$%k$NA49T$r<hF@(B
+    # ファイルの全行を取得
     with open(file_path, 'r') as file:
         lines = file.readlines()
 

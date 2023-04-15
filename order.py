@@ -9,15 +9,15 @@ INTERVAL = 60*60*24/5
 PAIR = 'btc_jpy'
 DIR = join(dirname(__file__), '')
 
-# $B%U%!%$%k$K(Border_id$B$H0lCW$9$k9T$,$"$l$P$=$N9T$r:o=|$7$F(BTrue$B$r!"L5$1$l$P(BFalse$B$rJV$9(B
+# ファイルにorder_idと一致する行があればその行を削除してTrueを、無ければFalseを返す
 def delete_matching_order(file_path, order_id):
     order_found = False
 
-    # $B%U%!%$%k$NA49T$r<hF@(B
+    # ファイルの全行を取得
     with open(file_path, 'r') as file:
         lines = file.readlines()
 
-    # $B0lCW$7$J$$9T$N$_%U%!%$%k$K=q$-La$9(B
+    # 一致しない行のみファイルに書き戻す
     with open(file_path, 'w') as file:
         for line in lines:
             if line.strip() == str(order_id):
@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     value = pub.get_depth(pair = PAIR)
 
-    # $BHD$+$iCmJ82A3J$H9XF~NL$r7hDj(B
+    # 板から注文価格と購入量を決定
     price = int(float(value["bids"][0][0])*0.9999)
     amount = BUY_YEN / price
 
@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     new_order = re_order = 0
     
-    # $BL$LsDj$NCmJ8$O%-%c%s%;%k$7$F:FCmJ8(B
+    # 未約定の注文はキャンセルして再注文
     orders = prv.get_active_orders(PAIR)
     for order in orders['orders']:
         if int(order['price']) < price:
@@ -57,16 +57,16 @@ if __name__ == '__main__':
                 value = prv.cancel_order(PAIR, order['order_id'])
                 print(json.dumps(value))
 
-                # $B:FCmJ8$N%+%&%s%H%"%C%W(B
+                # 再注文のカウントアップ
                 re_order += 1
     
-    # $BA02s$N?75,CmJ8$+$i$N0lDj;~4V$,7P$C$F$$$?$i?75,CmJ8(B
+    # 前回の新規注文からの一定時間が経っていたら新規注文
     time_diff = calculate_time_diff(DIR + 'time.txt')
     if time_diff >= INTERVAL:
         new_order = 1
         save_current_time(DIR + 'time.txt')
 
-    # $B?75,(B/$B:FCmJ8$N%+%&%s%H$@$1;XCMCmJ8(B
+    # 新規/再注文のカウントだけ指値注文
     for i in range(new_order + re_order):
         print('[new order]')
         order_result = prv.order( 
@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
         print(json.dumps(order_result))
 
-        # order_id$B$rJ]B8(B
+        # order_idを保存
         with open(DIR + 'orders.txt', 'a') as file:
             file.write(str(order_result['order_id']) + '\n')
 
