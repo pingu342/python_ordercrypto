@@ -17,7 +17,7 @@ def delete_matching_order(file_path, order_id):
     with open(file_path, 'r') as file:
         lines = file.readlines()
 
-    # 一致しない行のみファイルに書き戻す
+    # 一致しない行のみファイルに書き戻す (スポット注文は一致せずに書き戻す)
     with open(file_path, 'w') as file:
         for line in lines:
             if line.strip() == str(order_id):
@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
     new_order = re_order = 0
     
-    # 未約定の注文はキャンセルして再注文
+    # 未約定の定期購入の注文はキャンセルして再注文
     orders = prv.get_active_orders(PAIR)
     for order in orders['orders']:
         if int(order['price']) < price:
@@ -60,13 +60,13 @@ if __name__ == '__main__':
                 # 再注文のカウントアップ
                 re_order += 1
     
-    # 前回の新規注文からの一定時間が経っていたら新規注文
+    # 前回の定期購入の新規注文からの一定時間が経っていたら新規注文
     time_diff = calculate_time_diff(DIR + 'time.txt')
     if time_diff >= INTERVAL:
         new_order = 1
         save_current_time(DIR + 'time.txt')
 
-    # 新規/再注文のカウントだけ指値注文
+    # 定期購入の新規/再注文のカウントだけ指値注文
     for i in range(new_order + re_order):
         print('[new order]')
         order_result = prv.order( 

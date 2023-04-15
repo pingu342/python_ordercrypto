@@ -17,6 +17,11 @@ def matching_order(file_path, order_id):
         if line.strip() == str(order_id):
             order_found = True
 
+        # スポット注文
+        spot_order_id = '+' + str(order_id)
+        if line.strip() == spot_order_id:
+            order_found = True
+
     return order_found
 
 load_dotenv(DIR + '.env')
@@ -55,9 +60,16 @@ print('current price    :', current_price, '<br/>')
 
 print('profit           :', round(current_price * total_amount - total_price, 1), '<br/>')
 
+active_order = 0
+orders = prv.get_active_orders(PAIR)
+for order in orders['orders']:
+    if matching_order(DIR + 'orders.txt', order['order_id']):
+        active_order += 1
+
+print('active order     :', active_order, '<br/>')
+
 time_str = 'n/a'
 with open(DIR + 'time.txt', 'r') as file:
     time_str = file.read().strip()
 
 print('last order       :', time_str, '<br/>')
-

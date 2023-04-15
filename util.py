@@ -4,6 +4,9 @@ def save_current_time(file_path):
     # 現在時刻を取得
     now = datetime.datetime.now()
 
+    japan_tz = datetime.timezone(datetime.timedelta(hours=9))
+    now = now.astimezone(japan_tz)
+
     # ファイルに書き込む形式の時刻文字列を作成
     time_str = now.strftime("%Y-%m-%d %H:%M:%S")
 
