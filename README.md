@@ -3,17 +3,20 @@
 bitbankccでbtc_jpyペアをドルコスト平均法で定期購入する。
 
 ## 環境構築
+
+raspi4で動作確認
+
     $ cd ~
     $ mkdir virtualenv
     $ cd virtualenv
     $ python3 -m venv bitbankcc
     $ cd ~
     $ git pull <this repository>
+    $ cd python_ordercrypto
     $ . ~/virtualenv/bitbankcc/bin/activate
     $ pip install git+https://github.com/bitbankinc/python-bitbankcc@fba9f83\#egg=python-bitbankcc
     $ pip install requests
     $ pip install python-dotenv
-    $ cd python_ordercrypto
     $ echo "ENV_KEY=XXX" > .env
     $ echo "ENV_SECRET=XXX" >> .env
     $ deactivate
