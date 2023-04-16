@@ -31,7 +31,7 @@ crontabを使う場合
 
     $ crontab -e
     
-    */1 * * * * /path/to/python_ordercrypto/order.sh >> /path/to/python_ordercrypto/out  の行を追加
+    */1 * * * * /path/to/python_ordercrypto/order.sh >> /path/to/python_ordercrypto/out 2>&1  の行を追加
     
     $ sudo /etc/init.d/cron restart
 
@@ -51,13 +51,14 @@ crontabを使う場合
 ## 購入状況確認
 
     $ ./balance.sh
-    number of trades : 190
-    total amount     : 0.0626
-    purchase price   : 237919.9
-    average price    : 3800637.7
-    current price    : 4076978.0
-    profit           : 17298.9
-    last order       : 2023-04-15 06:45:59
+    number of trades : 200
+    total amount     : 0.0654
+    purchase price   : 249321.3
+    average price    : 3812251.5
+    current price    : 4059000.0
+    profit           : 16137.3 (6.5%)
+    active order     : 0
+    last order       : 2023-04-16 11:43:27
 
 orders.txtを参照してbitbankccに問い合わせして上記を出力する。
 
@@ -65,9 +66,9 @@ orders.txtを参照してbitbankccに問い合わせして上記を出力する�
 
     $ ./start_server.sh
     
-`http://<ip_addr>:5555/cgi-bin/balance.py` にアクセス
+`http://<ip_addr>:5555` にアクセス
 
-exitしてもサーバを永続実行させためscreenを使う場合
+シェルからexitしてもサーバを永続実行させるためscreenを使う場合
 
     $ sudo apt install screen
     $ screen
