@@ -58,7 +58,9 @@ value = pub.get_depth(pair = PAIR)
 current_price = float(value["bids"][0][0])
 print('current price    :', current_price, '<br/>')
 
-print('profit           :', round(current_price * total_amount - total_price, 1), '<br/>')
+profit = current_price * total_amount - total_price;
+
+print('profit           :', round(profit, 1), '(' + str(round(profit / total_price * 100, 1)) + '%)', '<br/>')
 
 active_order = 0
 orders = prv.get_active_orders(PAIR)
