@@ -62,6 +62,7 @@ if __name__ == '__main__':
     
     # 前回の定期購入の新規注文からの一定時間が経っていたら新規注文
     time_diff = calculate_time_diff(DIR + 'time.txt')
+    #print('time_diff', time_diff)
     if time_diff >= INTERVAL:
         new_order = 1
         save_current_time(DIR + 'time.txt')

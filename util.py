@@ -23,13 +23,18 @@ def calculate_time_diff(file_path):
     except FileNotFoundError:
         return 60*60*24*365
 
-    # ファイルに保存した時刻文字列をdatetimeオブジェクトに変換
+    japan_tz = datetime.timezone(datetime.timedelta(hours=9))
+
+    # ファイルに保存した時刻（日本時間）をdatetimeオブジェクトに変換
     saved_time = datetime.datetime.strptime(time_str, "%Y-%m-%d %H:%M:%S")
+    saved_time = saved_time.replace(tzinfo=japan_tz)
 
     # 現在時刻を取得
-    now = datetime.datetime.now()
+    now = datetime.datetime.now(japan_tz)
 
     # 差分を計算し、秒数を返す
+    #print('saved_time', saved_time)
+    #print('now', now)
     diff = now - saved_time
     return diff.total_seconds()
 
