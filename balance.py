@@ -14,8 +14,11 @@ def matching_order(file_path, order_id):
     order_found = False
 
     # ファイルの全行を取得
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+    except FileNotFoundError:
+        return False
 
     for line in lines:
         if line.strip() == str(order_id):
