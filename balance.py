@@ -72,7 +72,10 @@ if __name__ == '__main__':
     print('active order     :', active_order)
 
     time_str = 'n/a'
-    with open(DIR + 'time.txt', 'r') as file:
-        time_str = file.read().strip()
+    try:
+        with open(DIR + 'time.txt', 'r') as file:
+            time_str = file.read().strip()
+    except FileNotFoundError:
+        time_str = '-'
 
     print('last order       :', time_str)
