@@ -11,7 +11,7 @@ raspi4で動作確認
     $ cd virtualenv
     $ python3 -m venv bitbankcc
     $ cd ~
-    $ git pull <this repository>
+    $ git clone <this repository>
     $ cd python_ordercrypto
     $ . ~/virtualenv/bitbankcc/bin/activate
     $ pip install git+https://github.com/bitbankinc/python-bitbankcc@fba9f83\#egg=python-bitbankcc
