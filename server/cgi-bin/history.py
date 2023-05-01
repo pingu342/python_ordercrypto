@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 import python_bitbankcc
 import os, json, time
+import yaml
 from os.path import join, dirname
 from dotenv import load_dotenv
 
-PAIR = 'btc_jpy'
 DIR = join(dirname(__file__), '../../')
+with open(DIR + 'config.yaml', 'r') as f:
+    data = yaml.safe_load(f)
+
+PAIR = data['settings']['pair']
 
 def matching_order(file_path, order_id):
     order_found = False
