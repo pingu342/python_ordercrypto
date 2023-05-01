@@ -17,15 +17,14 @@ raspi4で動作確認
     $ pip install git+https://github.com/bitbankinc/python-bitbankcc@fba9f83\#egg=python-bitbankcc
     $ pip install requests
     $ pip install python-dotenv
+    $ pip install pyyaml
     $ echo "ENV_KEY=XXX" > .env
     $ echo "ENV_SECRET=XXX" >> .env
     $ deactivate
     
 ## 定期購入
 
-    $ ./order.sh
-
-order.shを定期的に実行する。
+`order.sh`を定期的に実行する。
 
 crontabを使う場合
 
@@ -35,11 +34,13 @@ crontabを使う場合
     
     $ sudo /etc/init.d/cron restart
 
-購入の設定はorder.pyの以下の変数で。デフォルトでは、BTCを2000円✕５回／日で購入する。つまり１日で１万円分のBTCを購入する。
+購入の設定は`config.yaml`の以下の変数で。デフォルトでは、BTCを2000円✕５回／日で購入する。つまり１日で１万円分のBTCを購入する。
 
-    PAIR = 'btc_jpy'
-    BUY_YEN = 2000
-    INTERVAL = 60*60*24/5
+    settings:
+        new_order: true # falseの場合、order.shは新規注文しない
+        pair: btc_jpy   # ペア
+        buy_yen: 2000   # 金額 (円)
+        interval: 17280 # 間隔 60*60*24/5 (秒)
 
 注文では板のbidsを取得してギリギリmakerとして注文できる価格で指値で注文する。
 

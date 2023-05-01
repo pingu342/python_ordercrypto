@@ -1,12 +1,22 @@
 import python_bitbankcc
 import os, json, time
+import yaml
 from os.path import join, dirname
 from dotenv import load_dotenv
 from util import save_current_time, calculate_time_diff
 
-BUY_YEN = 2000
-INTERVAL = 60*60*24/5
-PAIR = 'btc_jpy'
+with open('config.yaml', 'r') as f:
+    data = yaml.safe_load(f)
+
+BUY_YEN = data['settings']['buy_yen']
+INTERVAL = data['settings']['interval']
+PAIR = data['settings']['pair']
+NEW_ORDER = data['settings']['new_order']
+#print('BUY_YEN   :', BUY_YEN)
+#print('INTERVAL  :', INTERVAL)
+#print('PAIR      :', PAIR)
+#print('NEW_ORDER :', NEW_ORDER)
+
 DIR = join(dirname(__file__), '')
 
 # ファイルにorder_idと一致する行があればその行を削除してTrueを、無ければFalseを返す
@@ -63,7 +73,7 @@ if __name__ == '__main__':
     # 前回の定期購入の新規注文からの一定時間が経っていたら新規注文
     time_diff = calculate_time_diff(DIR + 'time.txt')
     #print('time_diff', time_diff)
-    if time_diff >= INTERVAL:
+    if time_diff >= INTERVAL and NEW_ORDER:
         new_order = 1
         save_current_time(DIR + 'time.txt')
 

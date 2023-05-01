@@ -1,0 +1,6 @@
+settings:
+    new_order: true
+    pair: btc_jpy
+    buy_yen: 2000
+    interval: 17280 # 60*60*24/5
+
