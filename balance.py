@@ -69,7 +69,8 @@ if __name__ == '__main__':
 
     profit = current_price * total_amount - total_price;
 
-    print('profit           :', round(profit, 1), '(' + str(round(profit / total_price * 100, 1)) + '%)')
+    if total_price > 0:
+        print('profit           :', round(profit, 1), '(' + str(round(profit / total_price * 100, 1)) + '%)')
 
     active_order = 0
     orders = prv.get_active_orders(PAIR)
