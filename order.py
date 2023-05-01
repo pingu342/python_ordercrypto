@@ -24,8 +24,11 @@ def delete_matching_order(file_path, order_id):
     order_found = False
 
     # ファイルの全行を取得
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
+    try:
+        with open(file_path, 'r') as file:
+            lines = file.readlines()
+    except FileNotFoundError:
+        return False
 
     # 一致しない行のみファイルに書き戻す (スポット注文は一致せずに書き戻す)
     with open(file_path, 'w') as file:
