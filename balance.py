@@ -60,7 +60,8 @@ if __name__ == '__main__':
     print('number of trades :', trade_num)
     print('total amount     :', round(total_amount, 6))
     print('purchase price   :', round(total_price, 1))
-    print('average price    :', round(total_price/total_amount, 1))
+    if total_amount > 0:
+        print('average price    :', round(total_price/total_amount, 1))
 
     value = pub.get_depth(pair = PAIR)
     current_price = float(value["bids"][0][0])
