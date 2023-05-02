@@ -18,6 +18,7 @@ raspi4で動作確認
     $ pip install requests
     $ pip install python-dotenv
     $ pip install pyyaml
+    $ pip install pyzipper
     $ echo "ENV_KEY=XXX" > .env
     $ echo "ENV_SECRET=XXX" >> .env
     $ deactivate

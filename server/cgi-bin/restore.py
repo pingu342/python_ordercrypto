@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os
 import cgi
-import zipfile
+import pyzipper
 from os.path import join, dirname
 
 DIR = join(dirname(__file__), '../../')
@@ -14,7 +14,8 @@ form = cgi.FieldStorage()
 
 if 'zipfile' in form:
     uploaded_zip = form['zipfile']
-    with zipfile.ZipFile(uploaded_zip.file) as zipf:
+    with pyzipper.AESZipFile(uploaded_zip.file) as zipf:
+        zipf.setpassword(form.getvalue('password').encode('UTF-8'))
         for fileinfo in zipf.infolist():
             filename = fileinfo.filename
             with open(DIR + filename, 'wb') as f:
