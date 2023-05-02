@@ -39,13 +39,17 @@ if amount <= 0.00001:
     print('amount too little')
     sys.exit()
 
-order_result = prv.order( 
-        pair = PAIR,
-        price = str(price),
-        amount = str(amount),
-        side = 'buy',
-        order_type = 'limit'
-        )
+try:
+    order_result = prv.order( 
+            pair = PAIR,
+            price = str(price),
+            amount = str(amount),
+            side = 'buy',
+            order_type = 'limit'
+            )
+except TypeError:
+    print('Private api error. Bad key and secret')
+    sys.exit()
 
 print('order_id :', order_result['order_id'], '<br/>')
 
