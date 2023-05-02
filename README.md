@@ -9,7 +9,7 @@ bitbankccでbtc_jpyペアをドルコスト平均法で定期購入する。
 
 クローン
 
-    $ git clone <this repository>
+    $ git clone https://github.com/pingu342/python_ordercrypto.git
     $ cd python_ordercrypto
 
 Dokerイメージを作成
@@ -22,6 +22,10 @@ Dokerイメージを作成
 
 ブラウザで`http://localhost:5555`にアクセス
 
+初めて使う場合、「APIキー設定」と「定期購入を開始」を行う。
+
+初めてではない場合（実行環境を引っ越しするなど）、以前の環境で「バックアップ」を行い、パスワードと`backup.zip`を保存しておき、新しい環境で「復元」を行うことで、APIキーや取引履歴が復元する。
+
 ## Dockerを使わずに実行
 
 raspi4で動作確認
@@ -33,7 +37,7 @@ raspi4で動作確認
     $ cd virtualenv
     $ python3 -m venv bitbankcc
     $ cd ~
-    $ git clone <this repository>
+    $ git clone https://github.com/pingu342/python_ordercrypto.git
     $ cd python_ordercrypto
     $ . ~/virtualenv/bitbankcc/bin/activate
     $ pip install git+https://github.com/bitbankinc/python-bitbankcc@fba9f83\#egg=python-bitbankcc
