@@ -18,7 +18,7 @@ print('Content-type: application/json')
 print()
 
 if new_order:
-    remain = interval - calculate_time_diff(DIR + 'time.txt')
+    remain = int(interval - calculate_time_diff(DIR + 'time.txt'))
     td = datetime.timedelta(seconds=remain)
     print('{"new_order": true, "remain": "%s"}\n' % td)
 else:
