@@ -3,9 +3,26 @@
 <head>
   <title>bitcoin購入</title>
   <meta charset="utf-8">
+      <script>
+        var xhr = new XMLHttpRequest();
+        var url = "cgi-bin/next_order_time.py";
+        xhr.open("GET", url, true);
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var resp = JSON.parse(xhr.responseText);
+				if (resp.new_order == true) {
+					document.getElementById("next_order_time").textContent = "次の定期購入まで残り " + resp.remain;
+				} else {
+					document.getElementById("next_order_time").innerHTML = '<a href="/cgi-bin/enable_new_order.py">定期購入を開始</a>';
+				}
+            }
+        };
+        xhr.send();
+    </script>
 </head>
 <body>
   <h1>bitcoin購入</h1>
+  <p id="next_order_time">loading...</p>
   <form method="post" action="/cgi-bin/spot_order.py">
     <input type="number" name="purchase">
     <input type="submit" value="スポット購入">
