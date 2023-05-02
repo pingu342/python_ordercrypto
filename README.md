@@ -2,9 +2,31 @@
 
 bitbankccでbtc_jpyペアをドルコスト平均法で定期購入する。
 
-## 環境構築
+- Dockerコンテナで実行
+- Dockeを使わずに実行
+
+## Dockerコンテナで実行
+
+クローン
+
+    $ git clone <this repository>
+    $ cd python_ordercrypto
+
+Dokerイメージを作成
+
+    $ docker build --tag python_ordercrypto .
+
+コンテナを作成して実行（5555番ポートを開放）
+
+    $ docker run --name my_container -p 5555:5555 -d python_ordercrypto
+
+ブラウザで`http://localhost:5555`にアクセス
+
+## Dockerを使わずに実行
 
 raspi4で動作確認
+
+### インストール
 
     $ cd ~
     $ mkdir virtualenv
@@ -23,11 +45,12 @@ raspi4で動作確認
     $ echo "ENV_SECRET=XXX" >> .env
     $ deactivate
     
-## 定期購入
+
+### 実行
 
 `order.sh`を定期的に実行する。
 
-crontabを使う場合
+crontabを使う場合：
 
     $ crontab -e
     
@@ -38,7 +61,7 @@ crontabを使う場合
 購入の設定は`config.yaml`の以下の変数で。デフォルトでは、BTCを2000円✕５回／日で購入する。つまり１日で１万円分のBTCを購入する。
 
     settings:
-        new_order: true # falseの場合、order.shは新規注文しない
+        new_order: false # falseの場合、order.shは新規注文しない
         pair: btc_jpy   # ペア
         buy_yen: 2000   # 金額 (円)
         interval: 17280 # 間隔 60*60*24/5 (秒)
@@ -50,7 +73,7 @@ crontabを使う場合
 実行時、orders.txtが存在するなら、orders.txtに書かれた過去のorder_idの注文の中で、未約定の注文についてはもっと約定しやすい価格に変更が可能であれば注文しなおしてorders.txtを更新する。
 
 
-## 購入状況確認
+### 購入状況確認
 
     $ ./balance.sh
     number of trades : 200
