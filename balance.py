@@ -40,7 +40,10 @@ if __name__ == '__main__':
     pub = python_bitbankcc.public()
     prv = python_bitbankcc.private(API_KEY, API_SECRET)
 
-    value = prv.get_trade_history(PAIR, 1000)
+    try:
+        value = prv.get_trade_history(PAIR, 1000)
+    except TypeError:
+        print('Private api error. Bad key and secret')
 
     # print(json.dumps(value))
     # {"trade_id": 3969372, "order_id": 324460818, "pair": "btc_jpy", "side": "buy", "type": "limit", "amount": "0.0050", "price": "2000000", "maker_taker": "maker", "fee_amount_base": "0.00000000", "fee_amount_quote": "0.0000", "executed_at": 1513733421000}

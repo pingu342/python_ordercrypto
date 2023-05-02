@@ -62,7 +62,11 @@ if __name__ == '__main__':
     new_order = re_order = 0
     
     # 未約定の定期購入の注文はキャンセルして再注文
-    orders = prv.get_active_orders(PAIR)
+    try:
+        orders = prv.get_active_orders(PAIR)
+    except TypeError:
+        print('Private api error. Bad key and secret')
+        
     for order in orders['orders']:
         if int(order['price']) < price:
             if delete_matching_order(DIR + 'orders.txt', order['order_id']):
