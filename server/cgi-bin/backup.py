@@ -17,8 +17,7 @@ form = cgi.FieldStorage()
 if 'password' in form:
     password = form.getvalue('password')
     print('Content-Type: application/zip')
-    print('Content-Disposition: attachment; filename="backup.zip"')
-    print()
+    print('Content-Disposition: attachment; filename="backup.zip"\r\n')
     sys.stdout.flush()   # required
     with pyzipper.AESZipFile(sys.stdout.buffer, 'w',
             compression=pyzipper.ZIP_LZMA) as zipf:
@@ -29,8 +28,7 @@ if 'password' in form:
                 zipf.writestr(filename, f.read())
 else:
     password = make_password(32)
-    print('Content-Type: text/html; charset=utf-8')
-    print()
+    print('Content-Type: text/html; charset=utf-8\r\n')
     print('Your password is: ', password, '<br/>')
     print('<a href="/cgi-bin/backup.py?password=%s">download</a>' % password)
 

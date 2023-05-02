@@ -16,7 +16,6 @@ with open(DIR + 'config.yaml', 'w') as f:
     yaml.safe_dump(config, f)
 
 print('Content-type: text/html; charset=UTF-8\r\n')
-print()
 
 print('ok')
 

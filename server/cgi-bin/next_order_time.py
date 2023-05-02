@@ -14,8 +14,7 @@ with open(DIR + 'config.yaml', 'r') as f:
 new_order = data['settings']['new_order']
 interval = data['settings']['interval']
 
-print('Content-type: application/json')
-print()
+print('Content-type: application/json\r\n')
 
 if new_order:
     remain = int(interval - calculate_time_diff(DIR + 'time.txt'))
