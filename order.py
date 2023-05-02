@@ -1,6 +1,7 @@
 import python_bitbankcc
 import os, json, time
 import yaml
+import sys
 from os.path import join, dirname
 from dotenv import load_dotenv
 from util import save_current_time, calculate_time_diff
@@ -66,6 +67,7 @@ if __name__ == '__main__':
         orders = prv.get_active_orders(PAIR)
     except TypeError:
         print('Private api error. Bad key and secret')
+        sys.exit()
         
     for order in orders['orders']:
         if int(order['price']) < price:

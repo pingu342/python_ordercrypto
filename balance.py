@@ -1,6 +1,7 @@
 import python_bitbankcc
 import os, json, time
 import yaml
+import sys
 from os.path import join, dirname
 from dotenv import load_dotenv
 
@@ -44,6 +45,7 @@ if __name__ == '__main__':
         value = prv.get_trade_history(PAIR, 1000)
     except TypeError:
         print('Private api error. Bad key and secret')
+        sys.exit()
 
     # print(json.dumps(value))
     # {"trade_id": 3969372, "order_id": 324460818, "pair": "btc_jpy", "side": "buy", "type": "limit", "amount": "0.0050", "price": "2000000", "maker_taker": "maker", "fee_amount_base": "0.00000000", "fee_amount_quote": "0.0000", "executed_at": 1513733421000}
