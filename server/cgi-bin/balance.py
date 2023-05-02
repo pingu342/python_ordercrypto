@@ -36,6 +36,8 @@ load_dotenv(DIR + '.env')
 API_KEY = os.environ.get("ENV_KEY")
 API_SECRET = os.environ.get("ENV_SECRET")
 
+print('Content-type: text/html; charset=UTF-8\r\n')
+
 pub = python_bitbankcc.public()
 prv = python_bitbankcc.private(API_KEY, API_SECRET)
 
@@ -60,7 +62,6 @@ for trade in value['trades']:
         total_price += (price * amount)
         trade_num += 1
 
-print('Content-type: text/html; charset=UTF-8\r\n')
 print('number of trades :', trade_num, '<br/>')
 print('total amount     :', round(total_amount, 6), '<br/>')
 print('purchase price   :', round(total_price, 1), '<br/>')
