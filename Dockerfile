@@ -6,9 +6,10 @@ RUN apt-get update \
 	&& apt-get upgrade -y
 
 RUN useradd -m -s /bin/bash hoge \
+	&& mkdir /home/hoge/data \
 	&& mkdir /home/hoge/virtualenv \
 	&& mkdir /home/hoge/python-ordercrypto \
-	&& chown -R hoge /home/hoge/virtualenv /home/hoge/python-ordercrypto
+	&& chown -R hoge /home/hoge/data /home/hoge/virtualenv /home/hoge/python-ordercrypto
 
 USER hoge
 WORKDIR /home/hoge/virtualenv
@@ -22,4 +23,6 @@ WORKDIR /home/hoge/python-ordercrypto
 COPY --chown=hoge . .
 
 EXPOSE 5555
+VOLUME /home/hoge/data
+ENV ENV_ORDERCRYPTO_DATA_DIR=/home/hoge/data
 CMD ./start.sh
