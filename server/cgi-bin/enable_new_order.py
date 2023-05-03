@@ -1,12 +1,13 @@
 #!/usr/bin/env python
+import os
 import sys
 import cgi
 import yaml
 from os.path import join, dirname
 
-DIR = join(dirname(__file__), '../../')
+DIR = os.environ.get("ENV_ORDERCRYPTO_DATA_DIR")
 
-with open(DIR + 'config.yaml', 'r') as f:
+with open(join(DIR, 'config.yaml'), 'r') as f:
     config = yaml.safe_load(f)
 
 new_order = True
@@ -19,7 +20,7 @@ if 'disable' in form:
 
 config['settings']['new_order'] = new_order
 
-with open(DIR + 'config.yaml', 'w') as f:
+with open(join(DIR, 'config.yaml'), 'w') as f:
     yaml.safe_dump(config, f)
 
 print('Content-type: text/html; charset=UTF-8\r\n')

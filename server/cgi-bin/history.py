@@ -6,8 +6,9 @@ import sys
 from os.path import join, dirname
 from dotenv import load_dotenv
 
-DIR = join(dirname(__file__), '../../')
-with open(DIR + 'config.yaml', 'r') as f:
+DIR = os.environ.get("ENV_ORDERCRYPTO_DATA_DIR")
+
+with open(join(DIR, 'config.yaml'), 'r') as f:
     data = yaml.safe_load(f)
 
 PAIR = data['settings']['pair']
@@ -32,7 +33,7 @@ def matching_order(file_path, order_id):
 
     return order_found
 
-load_dotenv(DIR + '.env')
+load_dotenv(join(DIR, '.env'))
 API_KEY = os.environ.get("ENV_KEY")
 API_SECRET = os.environ.get("ENV_SECRET")
 
@@ -49,7 +50,7 @@ except TypeError:
 
 print('active order', '<br/>')
 for order in orders['orders']:
-    if matching_order(DIR + 'orders.txt', order['order_id']):
+    if matching_order(join(DIR, 'orders.txt'), order['order_id']):
         a = order['start_amount']
         p = order['price']
         r = int(float(a) * float(p))
@@ -69,7 +70,7 @@ except TypeError:
 
 print('history', '<br/>')
 for trade in value['trades']:
-    if matching_order(DIR + 'orders.txt', trade['order_id']):
+    if matching_order(join(DIR, 'orders.txt'), trade['order_id']):
         a = trade['amount']
         p = trade['price']
         r = int(float(a) * float(p))

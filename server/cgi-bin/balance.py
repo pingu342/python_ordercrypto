@@ -6,8 +6,9 @@ import sys
 from os.path import join, dirname
 from dotenv import load_dotenv
 
-DIR = join(dirname(__file__), '../../')
-with open(DIR + 'config.yaml', 'r') as f:
+DIR = os.environ.get("ENV_ORDERCRYPTO_DATA_DIR")
+
+with open(join(DIR, 'config.yaml'), 'r') as f:
     data = yaml.safe_load(f)
 
 PAIR = data['settings']['pair']
@@ -32,7 +33,7 @@ def matching_order(file_path, order_id):
 
     return order_found
 
-load_dotenv(DIR + '.env')
+load_dotenv(join(DIR, '.env'))
 API_KEY = os.environ.get("ENV_KEY")
 API_SECRET = os.environ.get("ENV_SECRET")
 
@@ -55,7 +56,7 @@ total_amount = 0.0
 total_price = 0.0
 
 for trade in value['trades']:
-    if matching_order(DIR + 'orders.txt', trade['order_id']):
+    if matching_order(join(DIR, 'orders.txt'), trade['order_id']):
         amount = float(trade['amount'])
         price = float(trade['price'])
         total_amount += amount
@@ -80,13 +81,13 @@ if total_price > 0:
 active_order = 0
 orders = prv.get_active_orders(PAIR)
 for order in orders['orders']:
-    if matching_order(DIR + 'orders.txt', order['order_id']):
+    if matching_order(join(DIR, 'orders.txt'), order['order_id']):
         active_order += 1
 
 print('active order     :', active_order, '<br/>')
 
 try:
-    with open(DIR + 'time.txt', 'r') as file:
+    with open(join(DIR, 'time.txt'), 'r') as file:
         time_str = file.read().strip()
 except FileNotFoundError:
     time_str = '-'

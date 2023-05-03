@@ -10,7 +10,7 @@ def make_password(length):
     password = ''.join(secrets.choice(pass_chars) for x in range(length))
     return password
 
-DIR = join(dirname(__file__), '../../')
+DIR = os.environ.get("ENV_ORDERCRYPTO_DATA_DIR")
 
 form = cgi.FieldStorage()
 
@@ -24,7 +24,7 @@ if 'password' in form:
         zipf.setencryption(pyzipper.WZ_AES, nbits=128)
         zipf.setpassword(password.encode('UTF-8'))
         for filename in ['orders.txt', 'time.txt', '.env', 'config.yaml']:
-            with open(DIR + filename, 'rb') as f:
+            with open(join(DIR, filename), 'rb') as f:
                 zipf.writestr(filename, f.read())
 else:
     password = make_password(32)

@@ -5,8 +5,12 @@ import cgi, sys
 from os.path import join, dirname
 from dotenv import load_dotenv
 
-PAIR = 'btc_jpy'
-DIR = join(dirname(__file__), '../../')
+DIR = os.environ.get("ENV_ORDERCRYPTO_DATA_DIR")
+
+with open(join(DIR, 'config.yaml'), 'r') as f:
+    data = yaml.safe_load(f)
+
+PAIR = data['settings']['pair']
 
 print('Content-type: text/html; charset=UTF-8\r\n')
 
@@ -17,7 +21,7 @@ except:
     print('input error')
     sys.exit()
 
-load_dotenv(DIR + '.env')
+load_dotenv(join(DIR, '.env'))
 API_KEY = os.environ.get("ENV_KEY")
 API_SECRET = os.environ.get("ENV_SECRET")
 
@@ -54,6 +58,6 @@ except TypeError:
 print('order_id :', order_result['order_id'], '<br/>')
 
 # order_idを保存（スポット注文は先頭に '+' を付与）
-with open(DIR + 'orders.txt', 'a') as file:
+with open(join(DIR, 'orders.txt'), 'a') as file:
     file.write('+' + str(order_result['order_id']) + '\n')
 

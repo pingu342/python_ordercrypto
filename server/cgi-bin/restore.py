@@ -4,7 +4,7 @@ import cgi
 import pyzipper
 from os.path import join, dirname
 
-DIR = join(dirname(__file__), '../../')
+DIR = os.environ.get("ENV_ORDERCRYPTO_DATA_DIR")
 
 print('Content-type: text/html; charset=UTF-8\r\n')
 
@@ -18,7 +18,7 @@ if 'zipfile' in form:
         zipf.setpassword(form.getvalue('password').encode('UTF-8'))
         for fileinfo in zipf.infolist():
             filename = fileinfo.filename
-            with open(DIR + filename, 'wb') as f:
+            with open(join(DIR, filename), 'wb') as f:
                 f.write(zipf.read(fileinfo))
         result = 'ok'
 

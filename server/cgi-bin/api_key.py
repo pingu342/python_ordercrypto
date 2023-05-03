@@ -3,7 +3,7 @@ import os
 import cgi, sys
 from os.path import join, dirname
 
-DIR = join(dirname(__file__), '../../')
+DIR = os.environ.get("ENV_ORDERCRYPTO_DATA_DIR")
 
 print('Content-type: text/html; charset=UTF-8\r\n')
 
@@ -16,7 +16,7 @@ except:
     sys.exit()
 
 try:
-    with open(DIR + '.env', 'w') as file:
+    with open(join(DIR, '.env'), 'w') as file:
         file.write('ENV_KEY=' + key + '\n')
         file.write('ENV_SECRET=' + secret + '\n')
 except:

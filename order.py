@@ -6,7 +6,9 @@ from os.path import join, dirname
 from dotenv import load_dotenv
 from util import save_current_time, calculate_time_diff
 
-with open('config.yaml', 'r') as f:
+DIR = os.environ.get("ENV_ORDERCRYPTO_DATA_DIR")
+
+with open(join(DIR, 'config.yaml'), 'r') as f:
     data = yaml.safe_load(f)
 
 BUY_YEN = data['settings']['buy_yen']
@@ -17,8 +19,6 @@ NEW_ORDER = data['settings']['new_order']
 #print('INTERVAL  :', INTERVAL)
 #print('PAIR      :', PAIR)
 #print('NEW_ORDER :', NEW_ORDER)
-
-DIR = join(dirname(__file__), '')
 
 # ファイルにorder_idと一致する行があればその行を削除してTrueを、無ければFalseを返す
 def delete_matching_order(file_path, order_id):
@@ -43,7 +43,7 @@ def delete_matching_order(file_path, order_id):
 
 if __name__ == '__main__':
 
-    load_dotenv(DIR + '.env')
+    load_dotenv(join(DIR, '.env'))
     API_KEY = os.environ.get("ENV_KEY")
     API_SECRET = os.environ.get("ENV_SECRET")
 
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         
     for order in orders['orders']:
         if int(order['price']) < price:
-            if delete_matching_order(DIR + 'orders.txt', order['order_id']):
+            if delete_matching_order(join(DIR, 'orders.txt'), order['order_id']):
                 print('[cancel order]')
                 value = prv.cancel_order(PAIR, order['order_id'])
                 print(json.dumps(value))
@@ -80,11 +80,11 @@ if __name__ == '__main__':
                 re_order += 1
     
     # 前回の定期購入の新規注文からの一定時間が経っていたら新規注文
-    time_diff = calculate_time_diff(DIR + 'time.txt')
+    time_diff = calculate_time_diff(join(DIR, 'time.txt'))
     #print('time_diff', time_diff)
     if time_diff >= INTERVAL and NEW_ORDER:
         new_order = 1
-        save_current_time(DIR + 'time.txt')
+        save_current_time(join(DIR, 'time.txt'))
 
     # 定期購入の新規/再注文のカウントだけ指値注文
     for i in range(new_order + re_order):
@@ -100,6 +100,6 @@ if __name__ == '__main__':
         print(json.dumps(order_result))
 
         # order_idを保存
-        with open(DIR + 'orders.txt', 'a') as file:
+        with open(join(DIR, 'orders.txt'), 'a') as file:
             file.write(str(order_result['order_id']) + '\n')
 
