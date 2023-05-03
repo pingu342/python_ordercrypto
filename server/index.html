@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>bitcoin購入</title>
+  <title>Buy Bitcoin</title>
   <meta charset="utf-8">
       <script>
         var xhr = new XMLHttpRequest();
-        var url = "cgi-bin/next_order_time.py";
+        var url = "cgi-bin/get_info.py";
         xhr.open("GET", url, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {
@@ -15,13 +15,14 @@
 				} else {
 					document.getElementById("next_order_time").innerHTML = '<a href="/cgi-bin/enable_new_order.py">定期購入を開始</a>';
 				}
+				document.getElementById("hostname").textContent = resp.hostname;
             }
         };
         xhr.send();
     </script>
 </head>
 <body>
-  <h1>bitcoin購入</h1>
+  <h1>Buy Bitcoin</h1>
   <p id="next_order_time">loading...</p>
   <form method="post" action="/cgi-bin/spot_order.py">
     <input type="number" name="purchase">
@@ -36,5 +37,6 @@
   <a href="api_key.html">APIキー</a>
   <a href="/cgi-bin/backup.py" target="_blank">バックアップ</a>
   <a href="restore.html" target="_blank">復元</a>
+  <p id="hostname"></p>
 </body>
 </html>
