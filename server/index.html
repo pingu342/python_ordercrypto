@@ -60,6 +60,11 @@
       margin: 0;
     }
 
+    #stop_button {
+      text-align: center;
+      font-size: 18px;
+    }
+
     #popup_button {
       background-color: #4CAF50;
       border: none;
@@ -75,7 +80,7 @@
     }
 
     #next_order_time {
-      font-size: 24px;
+      font-size: 20px;
       color: #0066cc;
       height: 40px;
       overflow: hidden;
@@ -93,11 +98,12 @@
       if (xhr.readyState === 4 && xhr.status === 200) {
         var resp = JSON.parse(xhr.responseText);
         if (resp.new_order == true) {
-          document.getElementById("next_order_time").textContent =
-            "次の定期購入まで残り " + resp.remain;
+          document.getElementById("next_order_time").innerHTML =
+             '次の購入まで残り ' + resp.remain + 
+              ' <a href="/cgi-bin/enable_new_order.py?disable=1" id="stop_button">停止</a>';
         } else {
           document.getElementById("next_order_time").innerHTML =
-            '<a href="/cgi-bin/enable_new_order.py">定期購入を開始</a>';
+            '<a href="/cgi-bin/enable_new_order.py">定期購入を開始する</a>';
         }
       }
     };
@@ -132,7 +138,7 @@
       <input type="submit" value="サマリー">
     </form>
     <form method="get" action="/cgi-bin/history.py">
-      <input type="submit" value="取引履歴">
+      <input type="submit" value="購入履歴">
     </form>
     <a href="api_key.html">APIキー</a>
     <a href="/cgi-bin/backup.py" target="_blank">バックアップ</a>
