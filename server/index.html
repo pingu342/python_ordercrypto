@@ -1,42 +1,142 @@
 <!DOCTYPE html>
-<html>
 <head>
   <title>Buy Bitcoin</title>
   <meta charset="utf-8">
-      <script>
-        var xhr = new XMLHttpRequest();
-        var url = "cgi-bin/get_info.py";
-        xhr.open("GET", url, true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4 && xhr.status === 200) {
-                var resp = JSON.parse(xhr.responseText);
-				if (resp.new_order == true) {
-					document.getElementById("next_order_time").textContent = "次の定期購入まで残り " + resp.remain;
-				} else {
-					document.getElementById("next_order_time").innerHTML = '<a href="/cgi-bin/enable_new_order.py">定期購入を開始</a>';
-				}
-				document.getElementById("hostname").textContent = resp.hostname;
-            }
-        };
-        xhr.send();
-    </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f5f5;
+    }
+
+    header {
+      background-color: #333;
+      color: white;
+      padding: 1em;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 1em;
+    }
+
+    form {
+      margin-bottom: 1em;
+    }
+
+    input[type="number"] {
+      padding: 0.5em;
+      font-size: 1em;
+      border: 1px solid #ddd;
+      border-radius: 0.5em;
+    }
+
+    input[type="submit"] {
+      background-color: #333;
+      color: white;
+      padding: 0.5em 1em;
+      font-size: 1em;
+      border: none;
+      border-radius: 0.5em;
+      cursor: pointer;
+    }
+
+    a {
+      color: #333;
+      text-decoration: none;
+      display: inline-block;
+      margin-right: 1em;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    #popup_button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      float: right;
+    }
+
+    #next_order_time {
+      font-size: 24px;
+      color: #0066cc;
+      height: 40px;
+      overflow: hidden;
+      margin-top: 30px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+  </style>
+  <script>
+    var xhr = new XMLHttpRequest();
+    var url = "cgi-bin/get_info.py";
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        var resp = JSON.parse(xhr.responseText);
+        if (resp.new_order == true) {
+          document.getElementById("next_order_time").textContent =
+            "次の定期購入まで残り " + resp.remain;
+        } else {
+          document.getElementById("next_order_time").innerHTML =
+            '<a href="/cgi-bin/enable_new_order.py">定期購入を開始</a>';
+        }
+      }
+    };
+    xhr.send();
+
+    function showTor() {
+      var xhr = new XMLHttpRequest();
+      var url = "cgi-bin/get_info.py";
+      xhr.open("GET", url, true);
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          var resp = JSON.parse(xhr.responseText);
+          alert(resp.tor_name);
+        }
+      };
+      xhr.send();
+    }
+  </script>
 </head>
 <body>
-  <h1>Buy Bitcoin</h1>
-  <p id="next_order_time">loading...</p>
-  <form method="post" action="/cgi-bin/spot_order.py">
-    <input type="number" name="purchase">
-    <input type="submit" value="スポット購入">
-  </form>
-  <form method="get" action="/cgi-bin/balance.py">
-    <input type="submit" value="サマリー">
-  </form>
-  <form method="get" action="/cgi-bin/history.py">
-    <input type="submit" value="取引履歴">
-  </form>
-  <a href="api_key.html">APIキー</a>
-  <a href="/cgi-bin/backup.py" target="_blank">バックアップ</a>
-  <a href="restore.html" target="_blank">復元</a>
-  <p id="hostname"></p>
+  <header>
+    <h1>Buy Bitcoin</h1>
+    <button id="popup_button" onclick="showTor()">Remote Tor access</button>
+  </header>
+  <div class="container">
+    <p id="next_order_time">loading...</p>
+    <form method="post" action="/cgi-bin/spot_order.py">
+      <input type="number" name="purchase" placeholder="購入数量">
+      <input type="submit" value="スポット購入">
+    </form>
+    <form method="get" action="/cgi-bin/balance.py">
+      <input type="submit" value="サマリー">
+    </form>
+    <form method="get" action="/cgi-bin/history.py">
+      <input type="submit" value="取引履歴">
+    </form>
+    <a href="api_key.html">APIキー</a>
+    <a href="/cgi-bin/backup.py" target="_blank">バックアップ</a>
+    <a href="restore.html" target="_blank">復元</a>
+  </div>
 </body>
-</html>
+
