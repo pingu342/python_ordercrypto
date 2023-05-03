@@ -16,9 +16,13 @@ Dokerイメージを作成
 
     $ docker build --tag python_ordercrypto .
 
+Volumeを作成
+
+    $ docker volume create my_volume
+
 コンテナを作成して実行（5555番ポートを開放）
 
-    $ docker run --name my_container -p 5555:5555 -d python_ordercrypto
+    $ docker run -v my_volume:/home/hoge/data --name my_container -p 5555:5555 -d python_ordercrypto
 
 ブラウザで`http://localhost:5555`にアクセス
 
