@@ -7,7 +7,7 @@ bitbankccの取引所でBitcoinをドルコスト平均法で定期購入する�
 
 Dockerをインストール。（[https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)）
 
-定期購入プログラムが入ったDockerコンテナを実行。
+定期購入プログラムが入ったDockerイメージを実行。（[ghcr.io/pingu342/python_ordercrypto](https://github.com/pingu342/python_ordercrypto/pkgs/container/python_ordercrypto)）
 
     $ docker volume create my_volume
     $ docker run -v my_volume:/home/hoge/data --name test -p 5555:5555 -d ghcr.io/pingu342/python_ordercrypto
