@@ -19,8 +19,7 @@ fi
 
 echo 'Start Http server.'
 cd server
-python -m http.server 5555 --cgi
-./start_server.sh &
+python -m http.server 5555 --cgi &
 
 cd ..
 echo 'Start ordering periodicaly.'
