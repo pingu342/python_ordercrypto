@@ -43,8 +43,6 @@ Volumeを作成。
 
 ### 2-2.Dockerを使わずに実行
 
-raspi4で動作確認。
-
 #### 2-2-1.インストール
 
     $ cd ~
@@ -64,12 +62,33 @@ raspi4で動作確認。
     
 #### 2-2-2.実行
 
-crontabを使って`order.sh`を定期的に実行。
+##### 2-2-2-1. order.shを定期的に実行
 
-    $ crontab -l | { cat; echo "*/1 * * * * /path/to/python_ordercrypto/order.sh >> /path/to/python_ordercrypto/out 2>&1"; } | crontab -
-    $ sudo /etc/init.d/cron restart
+- Linux : cronを使う
 
-シェルで購入状況を確認。
+        $ crontab -l | { cat; echo "*/1 * * * * /path/to/python_ordercrypto/order.sh >> /path/to/python_ordercrypto/out 2>&1"; } | crontab -
+        $ sudo /etc/init.d/cron restart
+
+    - /path/toは環境に合わせて書き換えること
+
+- macOS : LaunchAgentsを使う
+
+    - [order.c](https://github.com/pingu342/python_ordercrypto/blob/master/order.c)を`gcc order.c`でコンパイルしてa.outを作成
+    - a.outをorder.shと同じフォルダに配置
+    - a.outを試しに実行してoreder.shが実行されることを確認（プライバシー設定でa.outによるファイルアクセスを許可が必要）
+    - a.outをLaunchAgentsで定期実行させるための設定ファイル[order_btc.plist](https://github.com/pingu342/python_ordercrypto/blob/master/macos/order_btc.plist)をダウンロード
+    - order_btc.plist内の/path/toを環境に合わせて書き換える
+    - order_btc.plistをユーザーの~/Library/LaunchAgentsフォルダに配置
+    - order_btc.plistは（macOSの起動時ではなく）ユーザーのログイン時に自動起動
+    - 手動で定期実行を開始するとき
+    
+            $ launchctl load ~/Library/LaunchAgents/order_btc.plist 
+
+    - 手動で定期実行を停止するとき
+    
+            $ launchctl unload ~/Library/LaunchAgents/order_btc.plist 
+
+##### 2-2-2-2. シェルで購入状況を確認
 
     $ ./balance.sh
     number of trades : 200
@@ -81,7 +100,7 @@ crontabを使って`order.sh`を定期的に実行。
     active order     : 0
     last order       : 2023-04-16 11:43:27
 
-ブラウザで確認。
+##### 2-2-2-3. ブラウザで確認
 
     $ ./start_server.sh
     
