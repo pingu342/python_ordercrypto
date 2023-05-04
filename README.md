@@ -128,6 +128,7 @@ crontabを使って`order.sh`を定期的に実行。
 
 - バックアップと復元
     - 対象は、config.yaml、orders.txt、time.txt、APIキー
+    - Dockerで実行時はこれらのファイルをコンテナ外のVolumeに保存することで永続化（docker runオプションに`-v my_volume:/home/hoge/data`を付与）
 
 ### 購入状況の確認
 
