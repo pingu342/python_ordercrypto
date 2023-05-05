@@ -15,9 +15,17 @@ if ! [ -e $path ]; then
 	cp -R data/. $dir
 fi
 
-. ~/virtualenv/bitbankcc/bin/activate
+echo 'Start tor'
+tor &
+file=/var/lib/tor/hidden_service/hostname
+while [ ! -f "$file" ]
+do
+  sleep 1
+done
+export APP_HIDDEN_SERVICE=$(cat $file | tr -d '[:space:]')
 
 echo 'Start Http server.'
+. ~/virtualenv/bitbankcc/bin/activate
 cd server
 python -m http.server 5555 --cgi &
 
