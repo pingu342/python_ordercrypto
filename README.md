@@ -5,8 +5,9 @@ bitbankccの取引所でBitcoinをドルコスト平均法で定期購入する�
 　
 ## 1.実行手順
 
-Dockerをインストール。  
-参考：[https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
+Dockerをインストール。 
+
+> 参考：[https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/)
 
 Dockerイメージを実行。  
 
@@ -15,13 +16,15 @@ Dockerイメージを実行。
 
 `http://<ip_addr>:5555` にアクセス。
 
+Torでリモートアクセスも可能。
+
 初めて使う場合、「APIキー設定」と「定期購入を開始」を行う。
 
 初めてではない場合（実行環境を引っ越しするなど）、以前の環境で「バックアップ」を行い、パスワードと`backup.zip`を保存しておき、新しい環境で「復元」を行うことで、APIキーや購入履歴が復元する。
 
 ## 2.その他の実行手順
 
-### 2-1.Dockerイメージをビルド＆実行
+### 2-1.Dockerを使う
 
 リポジトリをクローン。
 
@@ -40,12 +43,17 @@ Volumeを作成。
 
     $ docker run -v my_volume:/home/hoge/data --name my_container -p 5555:5555 -d python_ordercrypto
 
-ブラウザで`http://localhost:5555`にアクセス
+ブラウザで`http://localhost:5555`にアクセス。
 
-### 2-2.Dockerを使わずに実行
+Torでリモートアクセスも可能。
+
+### 2-2.Dockerを使わない
+
+Torはサポート外
 
 #### 2-2-1.インストール
 
+    $ apt install git python3 py3-pip
     $ cd ~
     $ mkdir virtualenv
     $ cd virtualenv
