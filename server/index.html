@@ -140,6 +140,31 @@
 			xhr.send();
 		}
 
+		function reqSpotOrder(purchase) {
+			var xhr = new XMLHttpRequest();
+			var url = "/cgi-bin/spot_order.py?purchase=" + purchase;
+			xhr.open("GET", url, true);
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+					var resp = JSON.parse(xhr.responseText);
+					if (resp.result) {
+						alert("注文しました");
+					} else {
+						alert("エラー：" + resp.error);
+					}
+				}
+			};
+			xhr.send();
+		}
+
+		window.onload = function(){
+			var form = document.getElementById("spot-order-form");
+			form.addEventListener("submit", function(event) {
+				event.preventDefault();
+				var purchase = document.getElementById("spot-order-form-purchase").value;
+				reqSpotOrder(purchase);
+			});
+		}
 		getInfo();
 		getBalance();
 	</script>
@@ -166,8 +191,8 @@
 		<p>
 		現在価格：<span id="current-price"></span><br/>
 		</p>
-		<form method="post" action="/cgi-bin/spot_order.py">
-			<input type="number" name="purchase" placeholder="購入金額（円）">
+		<form id="spot-order-form">
+			<input type="number" id="spot-order-form-purchase" placeholder="購入金額（円）">
 			<button type="submit">スポット購入</button>
 		</form>
 		<form method="get" action="/cgi-bin/history.py" target="_blank">

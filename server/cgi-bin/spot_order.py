@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import python_bitbankcc
 import os, json, time
-import cgi, sys
+import cgi, sys, yaml
 from os.path import join, dirname
 from dotenv import load_dotenv
 
@@ -12,13 +12,16 @@ with open(join(DIR, 'config.yaml'), 'r') as f:
 
 PAIR = data['settings']['pair']
 
-print('Content-type: text/html; charset=UTF-8\r\n')
+print('Content-type: application/json\r\n')
 
 try:
     form = cgi.FieldStorage()
     purchase = float(form['purchase'].value)
 except:
-    print('input error')
+    print('{')
+    print('"result" : false,')
+    print('"error" : "Inpur parameter error."')
+    print('}')
     sys.exit()
 
 load_dotenv(join(DIR, '.env'))
@@ -34,13 +37,11 @@ value = pub.get_depth(pair = PAIR)
 price = int(float(value["bids"][0][0])*0.9999)
 amount = round(purchase / price, 6)
 
-print('[bids]', '<br/>')
-print('purchase :', purchase, '<br/>')
-print('price    :', price, '<br/>')
-print('amount   :', amount, '<br/>')
-
-if amount <= 0.00001:
-    print('amount too little')
+if amount <= 0.0001:
+    print('{')
+    print('"result" : false,')
+    print('"error" : "Inpur parameter error."')
+    print('}')
     sys.exit()
 
 try:
@@ -52,10 +53,19 @@ try:
             order_type = 'limit'
             )
 except TypeError:
-    print('Private api error. Bad key and secret')
+    print('{')
+    print('"result" : false,')
+    print('"error" : "Bad API key."')
+    print('}')
     sys.exit()
 
-print('order_id :', order_result['order_id'], '<br/>')
+print('{')
+print('"result" : true,')
+print('"purchase" :', purchase, ',')
+print('"price" :', price, ',')
+print('"amount" :', amount, ',')
+print('"order_id" :', order_result['order_id'])
+print('}')
 
 # order_idを保存（スポット注文は先頭に '+' を付与）
 with open(join(DIR, 'orders.txt'), 'a') as file:
