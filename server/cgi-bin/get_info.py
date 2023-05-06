@@ -17,6 +17,7 @@ with open(join(DIR, 'config.yaml'), 'r') as f:
     data = yaml.safe_load(f)
 
 new_order = data['settings']['new_order']
+purchase = data['settings']['buy_yen']
 interval = data['settings']['interval']
 
 print('Content-type: application/json\r\n')
@@ -24,7 +25,7 @@ print('Content-type: application/json\r\n')
 if new_order:
     remain = int(interval - calculate_time_diff(join(DIR, 'time.txt')))
     td = datetime.timedelta(seconds=remain)
-    print('{"new_order": true, "remain": "%s", "tor_name": "%s"}\n' % (td, tor_name))
+    print('{"new_order": true, "purchase": %d, "interval": %d, "remain": "%s", "tor_name": "%s"}\n' % (purchase, interval, td, tor_name))
 else:
-    print('{"new_order": false, "remain": -1, "tor_name": "%s"}\n' % tor_name)
+    print('{"new_order": false, "purchase": %d, "interval": %d, "remain": -1, "tor_name": "%s"}\n' % (purchase, interval, tor_name))
 

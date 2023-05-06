@@ -46,8 +46,8 @@ try:
     value = prv.get_trade_history(PAIR, 1000)
 except TypeError:
     print('{')
-    print('"result" : false', ',')
-    print('"error" :', 'Bad API key')
+    print('"result" : false,')
+    print('"error" : "Bad API key"')
     print('}')
     sys.exit()
 

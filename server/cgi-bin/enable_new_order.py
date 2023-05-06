@@ -20,6 +20,12 @@ if 'disable' in form:
 
 config['settings']['new_order'] = new_order
 
+if new_order:
+    purchase = form.getvalue('purchase')
+    interval = form.getvalue('interval')
+    config['settings']['buy_yen'] = int(purchase)
+    config['settings']['interval'] = int(interval)
+
 with open(join(DIR, 'config.yaml'), 'w') as f:
     yaml.safe_dump(config, f)
 

@@ -28,7 +28,6 @@
 		}
 		form {
 			display: flex;
-			align-items: center;
 			margin-top: 20px;
 			margin-bottom: 20px;
 		}
@@ -52,6 +51,46 @@
 			cursor: pointer;
 			font-size: 16px;
 		}
+
+		.popup-form-container {
+			display: none;
+			position: fixed;
+			z-index: 1;
+			padding-top: 100px;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0,0,0,0.4);
+		}
+		
+		.popup-form-div {
+			background-color: #fefefe;
+			margin: auto;
+			padding: 20px;
+			border: 1px solid #888;
+			width: 170px;
+		}
+		
+		.popup-form {
+			display: flex;
+			flex-direction: column;
+		}
+		
+		.popup-close {
+			color: #aaa;
+			float: right;
+			font-size: 28px;
+			font-weight: bold;
+		}
+		
+		.popup-close:hover,
+		.popup-close:focus {
+			color: black;
+			text-decoration: none;
+			cursor: pointer;
+		}
 	</style>
 	<script>
 		function getInfo() {
@@ -62,7 +101,9 @@
 				if (xhr.readyState === 4 && xhr.status === 200) {
 					var resp = JSON.parse(xhr.responseText);
 					if (resp.new_order == true) {
-						document.getElementById("time-remaining").innerHTML = resp.remain;
+						document.getElementById("time-remaining").innerHTML = "残り " + resp.remain;
+						document.getElementById("purchase").innerHTML = resp.purchase + " 円/回";
+						document.getElementById("interval").innerHTML = resp.interval + " 秒";
 						document.getElementById('start-stop-button').removeEventListener('click', enableNewOrder);
 						document.getElementById('start-stop-button').addEventListener('click', disableNewOrder);
 						document.getElementById('start-stop-button').innerHTML = '定期購入を停止';
@@ -70,6 +111,8 @@
 					} else {
 						alert('定期購入は停止しています');
 						document.getElementById("time-remaining").innerHTML = '停止';
+						document.getElementById("purchase").innerHTML = resp.purchase + " 円/回";
+						document.getElementById("interval").innerHTML = resp.interval + " 秒";
 						document.getElementById('start-stop-button').removeEventListener('click', disableNewOrder);
 						document.getElementById('start-stop-button').addEventListener('click', enableNewOrder);
 						document.getElementById('start-stop-button').innerHTML = '定期購入を開始';
@@ -102,11 +145,13 @@
 			xhr.send();
 		}
 
-		function setEnableNewOrder(enable) {
+		function reqEnableNewOrder(enable, purchase, interval) {
 			var xhr = new XMLHttpRequest();
 			var url = "/cgi-bin/enable_new_order.py";
 			if (!enable) {
-				url = url + '?disable=1';
+				url = url + "?disable=1";
+			} else {
+				url = url + "?purchase=" + purchase + "&interval=" + interval;
 			}
 			xhr.open("GET", url, true);
 			xhr.onreadystatechange = function () {
@@ -118,12 +163,13 @@
 		}
 
 		function disableNewOrder() {
-			setEnableNewOrder(false);
+			reqEnableNewOrder(false, 0, 0);
 		}
 
 		function enableNewOrder() {
 			if (confirm("定期購入を開始しますか")) {
-				setEnableNewOrder(true);
+				var popupFormContainer = document.getElementById("popupFormContainer");
+				popupFormContainer.style.display = "block";
 			}
 		}
 
@@ -164,6 +210,23 @@
 				var purchase = document.getElementById("spot-order-form-purchase").value;
 				reqSpotOrder(purchase);
 			});
+
+			var popupFormContainer = document.getElementById("popupFormContainer");
+			var closeButton = document.getElementById("closeButton");
+			closeButton.onclick = function() {
+				popupFormContainer.style.display = "none";
+			}
+
+			var form = document.getElementById("start-new-order-form");
+			form.addEventListener("submit", function(event) {
+				event.preventDefault();
+				var purchase = document.getElementById("start-new-order-form-purchase").value;
+				var interval = document.getElementById("start-new-order-form-interval").value;
+				reqEnableNewOrder(true, purchase, interval);
+
+				var popupFormContainer = document.getElementById("popupFormContainer");
+				popupFormContainer.style.display = "none";
+			});
 		}
 		getInfo();
 		getBalance();
@@ -180,8 +243,14 @@
 		</div>
 	</header>
 	<main>
-		<p>次の定期購入までの残り：<span id="time-remaining"> loading... </span></p>
 		<p>
+		<h3>定期購入</h3>
+		次回購入：<span id="time-remaining"> loading... </span><br/>
+		購入金額：<span id="purchase"></span><br/>
+		購入間隔：<span id="interval"></span>
+		</p>
+		<p>
+		<h3>資産</h3>
 		保有数　：<span id="total-amount">loading...</span><br/>
 		購入単価：<span id="unit-price"></span><br/>
 		購入価額：<span id="total-payment"></span><br/>
@@ -189,15 +258,30 @@
 		評価損益：<span id="profit"></span><br/>
 		</p>
 		<p>
+		<h3>スポット購入</h3>
 		現在価格：<span id="current-price"></span><br/>
 		</p>
 		<form id="spot-order-form">
 			<input type="number" id="spot-order-form-purchase" placeholder="購入金額（円）">
-			<button type="submit">スポット購入</button>
+			<button type="submit">注文</button>
 		</form>
 		<form method="get" action="/cgi-bin/history.py" target="_blank">
 			<button type="submit" id="purchase-history">購入履歴</button>
 		</form>
 		<button style="visibility:hidden" id="start-stop-button"></button>
+
+		<div class="popup-form-container" id="popupFormContainer">
+			<div class="popup-form-div">
+				<span class="popup-close" id="closeButton">&times;</span>
+				<h3>定期購入</h3>
+				<form class="popup-form" id="start-new-order-form">
+					<label for="popup-form-purchase">購入金額（円）</label><br/>
+					<input type="number" id="start-new-order-form-purchase" name="popup-form-purchase"><br/>
+					<label for="popup-form-interval">インターバル（秒）</label><br/>
+					<input type="number" id="start-new-order-form-interval" name="popup-form-interval"><br/>
+					<button type="submit">定期購入を開始</button>
+				</form>
+			</div>
+		</div>
 	</main>
 </body>
