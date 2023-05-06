@@ -1,8 +1,11 @@
 # python_ordercrypto
 
 bitbankccの取引所でBitcoinをドルコスト平均法で定期購入する。
-　
-　
+
+<img src="screen.png" width="300px">
+
+
+
 ## 1.実行手順
 
 Dockerをインストール。 
