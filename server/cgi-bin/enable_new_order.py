@@ -23,7 +23,7 @@ config['settings']['new_order'] = new_order
 with open(join(DIR, 'config.yaml'), 'w') as f:
     yaml.safe_dump(config, f)
 
-print('Content-type: text/html; charset=UTF-8\r\n')
+print('Content-type: application/json\r\n')
 
-print('ok')
+print('{"result": true}')
 

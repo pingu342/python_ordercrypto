@@ -1,148 +1,178 @@
 <!DOCTYPE html>
+<html>
 <head>
-  <title>Buy Bitcoin</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f5f5f5;
-    }
+	<meta charset="UTF-8">
+	<title>Buy Bitcoin</title>
+	<meta name="viewport" content="width=device-width">
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: sans-serif;
+			background-color: #f2f2f2;
+		}
+		header {
+			background-color: #333;
+			color: #fff;
+			padding: 20px;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+		h1 {
+			margin: 0;
+			font-size: 32px;
+		}
+		main {
+			margin: 20px;
+		}
+		form {
+			display: flex;
+			align-items: center;
+			margin-top: 20px;
+			margin-bottom: 20px;
+		}
+		label {
+			margin-right: 10px;
+			font-size: 16px;
+		}
+		input[type="number"] {
+			padding: 10px;
+			font-size: 16px;
+			border: 1px solid #ccc;
+			border-radius: 5px;
+			width: 150px;
+		}
+		button {
+			padding: 10px;
+			background-color: #333;
+			color: #fff;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+			font-size: 16px;
+		}
+	</style>
+	<script>
+		function getInfo() {
+			var xhr = new XMLHttpRequest();
+			var url = "/cgi-bin/get_info.py";
+			xhr.open("GET", url, true);
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+					var resp = JSON.parse(xhr.responseText);
+					if (resp.new_order == true) {
+						document.getElementById("time-remaining").innerHTML = resp.remain;
+						document.getElementById('start-stop-button').removeEventListener('click', enableNewOrder);
+						document.getElementById('start-stop-button').addEventListener('click', disableNewOrder);
+						document.getElementById('start-stop-button').innerHTML = '定期購入を停止';
+						document.getElementById('start-stop-button').style.visibility = 'visible';
+					} else {
+						alert('定期購入は停止しています');
+						document.getElementById("time-remaining").innerHTML = '停止';
+						document.getElementById('start-stop-button').removeEventListener('click', disableNewOrder);
+						document.getElementById('start-stop-button').addEventListener('click', enableNewOrder);
+						document.getElementById('start-stop-button').innerHTML = '定期購入を開始';
+						document.getElementById('start-stop-button').style.visibility = 'visible';
+					}
+				}
+			};
+			xhr.send();
+		}
 
-    header {
-      background-color: #333;
-      color: white;
-      padding: 1em;
-      text-align: center;
-    }
+		function getBalance() {
+			var xhr = new XMLHttpRequest();
+			var url = "/cgi-bin/balance.py";
+			xhr.open("GET", url, true);
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+					var resp = JSON.parse(xhr.responseText);
+					if (resp.result) {
+						document.getElementById("total-amount").innerHTML = resp.total_amount + ' BTC';
+						document.getElementById("unit-price").innerHTML = resp.unit_price + ' 円/BTC';
+						document.getElementById("total-payment").innerHTML = resp.total_payment + ' 円';
+						document.getElementById("market-value").innerHTML = resp.market_value +  ' 円';
+						document.getElementById("profit").innerHTML = resp.profit + ' 円 (' + resp.profit_rate + '%)';
+						document.getElementById("current-price").innerHTML = resp.current_price + ' 円/BTC';
+					} else {
+						document.getElementById("total-amount").innerHTML = 'APIキー不正';
+					}
+				}
+			};
+			xhr.send();
+		}
 
-    h1 {
-      margin: 0;
-    }
+		function setEnableNewOrder(enable) {
+			var xhr = new XMLHttpRequest();
+			var url = "/cgi-bin/enable_new_order.py";
+			if (!enable) {
+				url = url + '?disable=1';
+			}
+			xhr.open("GET", url, true);
+			xhr.onreadystatechange = function () {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+					getInfo();
+				}
+			};
+			xhr.send();
+		}
 
-    .container {
-      max-width: 500px;
-      margin: 0 auto;
-      padding: 1em;
-    }
+		function disableNewOrder() {
+			setEnableNewOrder(false);
+		}
 
-    form {
-      margin-bottom: 1em;
-    }
+		function enableNewOrder() {
+			if (confirm("定期購入を開始しますか")) {
+				setEnableNewOrder(true);
+			}
+		}
 
-    input[type="number"] {
-      padding: 0.5em;
-      font-size: 1em;
-      border: 1px solid #ddd;
-      border-radius: 0.5em;
-    }
+		function showTorAddr() {
+			var xhr = new XMLHttpRequest();
+			var url = "/cgi-bin/get_info.py";
+			xhr.open("GET", url, true);
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState === 4 && xhr.status === 200) {
+					var resp = JSON.parse(xhr.responseText);
+					alert(resp.tor_name);
+				}
+			};
+			xhr.send();
+		}
 
-    input[type="submit"] {
-      background-color: #333;
-      color: white;
-      padding: 0.5em 1em;
-      font-size: 1em;
-      border: none;
-      border-radius: 0.5em;
-      cursor: pointer;
-    }
-
-    a {
-      color: #333;
-      text-decoration: none;
-      display: inline-block;
-      margin-right: 1em;
-    }
-
-    p {
-      margin: 0;
-    }
-
-    #stop_button {
-      text-align: center;
-      font-size: 18px;
-    }
-
-    #popup_button {
-      background-color: #4CAF50;
-      border: none;
-      color: white;
-      padding: 10px 20px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      margin: 4px 2px;
-      cursor: pointer;
-      float: right;
-    }
-
-    #next_order_time {
-      font-size: 20px;
-      color: #0066cc;
-      height: 40px;
-      overflow: hidden;
-      margin-top: 30px;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-
-  </style>
-  <script>
-    var xhr = new XMLHttpRequest();
-    var url = "cgi-bin/get_info.py";
-    xhr.open("GET", url, true);
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        var resp = JSON.parse(xhr.responseText);
-        if (resp.new_order == true) {
-          document.getElementById("next_order_time").innerHTML =
-             '次の購入まで残り ' + resp.remain + 
-              ' <a href="/cgi-bin/enable_new_order.py?disable=1" id="stop_button">停止</a>';
-        } else {
-          document.getElementById("next_order_time").innerHTML =
-            '<a href="/cgi-bin/enable_new_order.py">定期購入を開始する</a>';
-        }
-      }
-    };
-    xhr.send();
-
-    function showTor() {
-      var xhr = new XMLHttpRequest();
-      var url = "cgi-bin/get_info.py";
-      xhr.open("GET", url, true);
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-          var resp = JSON.parse(xhr.responseText);
-          alert(resp.tor_name);
-        }
-      };
-      xhr.send();
-    }
-  </script>
+		getInfo();
+		getBalance();
+	</script>
 </head>
 <body>
-  <header>
-    <h1>Buy Bitcoin</h1>
-    <button id="popup_button" onclick="showTor()">Remote Tor access</button>
-  </header>
-  <div class="container">
-    <p id="next_order_time">loading...</p>
-    <form method="post" action="/cgi-bin/spot_order.py">
-      <input type="number" name="purchase" placeholder="購入数量">
-      <input type="submit" value="スポット購入">
-    </form>
-    <form method="get" action="/cgi-bin/balance.py">
-      <input type="submit" value="サマリー">
-    </form>
-    <form method="get" action="/cgi-bin/history.py">
-      <input type="submit" value="購入履歴">
-    </form>
-    <a href="api_key.html">APIキー</a>
-    <a href="/cgi-bin/backup.py" target="_blank">バックアップ</a>
-    <a href="restore.html" target="_blank">復元</a>
-  </div>
+	<header>
+		<h1>Buy Bitcoin</h1>
+		<div>
+			<button onclick="showTorAddr()">Torアドレス</button>
+			<button onclick="window.open('api_key.html')">APIキー</button>
+			<button onclick="window.open('/cgi-bin/backup.py')">バックアップ</button>
+			<button onclick="window.open('restore.html')">復元</button>
+		</div>
+	</header>
+	<main>
+		<p>次の定期購入までの残り：<span id="time-remaining"> loading... </span></p>
+		<p>
+		保有数　：<span id="total-amount">loading...</span><br/>
+		単価　　：<span id="unit-price"></span><br/>
+		総支払　：<span id="total-payment"></span><br/>
+		評価額　：<span id="market-value"></span><br/>
+		利益　　：<span id="profit"></span><br/>
+		</p>
+		<p>
+		現在価格：<span id="current-price"></span><br/>
+		</p>
+		<form method="post" action="/cgi-bin/spot_order.py">
+			<input type="number" name="purchase" placeholder="購入金額（円）">
+			<button type="submit">スポット購入</button>
+		</form>
+		<form method="get" action="/cgi-bin/history.py" target="_blank">
+			<button type="submit" id="purchase-history">購入履歴</button>
+		</form>
+		<button style="visibility:hidden" id="start-stop-button"></button>
+	</main>
 </body>
-

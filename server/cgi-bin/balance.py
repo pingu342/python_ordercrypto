@@ -37,7 +37,7 @@ load_dotenv(join(DIR, '.env'))
 API_KEY = os.environ.get("ENV_KEY")
 API_SECRET = os.environ.get("ENV_SECRET")
 
-print('Content-type: text/html; charset=UTF-8\r\n')
+print('Content-type: application/json\r\n')
 
 pub = python_bitbankcc.public()
 prv = python_bitbankcc.private(API_KEY, API_SECRET)
@@ -45,7 +45,10 @@ prv = python_bitbankcc.private(API_KEY, API_SECRET)
 try:
     value = prv.get_trade_history(PAIR, 1000)
 except TypeError:
-    print('Private api error. Bad key and secret')
+    print('{')
+    print('"result" : false', ',')
+    print('"error" :', 'Bad API key')
+    print('}')
     sys.exit()
 
 # print(json.dumps(value))
@@ -63,20 +66,24 @@ for trade in value['trades']:
         total_price += (price * amount)
         trade_num += 1
 
-print('number of trades :', trade_num, '<br/>')
-print('total amount     :', round(total_amount, 6), '<br/>')
-print('purchase price   :', round(total_price, 1), '<br/>')
+print('{')
+print('"result" : true', ',')
+print('"number_of_trades" :', trade_num, ',')
+print('"total_amount" :', round(total_amount, 6), ',')
+print('"total_payment" :', round(total_price, 1), ',')
 if total_amount > 0:
-    print('average price    :', round(total_price/total_amount, 1), '<br/>')
+    print('"unit_price" :', round(total_price/total_amount, 1), ',')
 
 value = pub.get_depth(pair = PAIR)
 current_price = float(value["bids"][0][0])
-print('current price    :', current_price, '<br/>')
+print('"current_price" :', current_price, ',')
+print('"market_value" :', round(current_price * total_amount, 1), ',')
 
 profit = current_price * total_amount - total_price;
 
 if total_price > 0:
-    print('profit           :', round(profit, 1), '(' + str(round(profit / total_price * 100, 1)) + '%)', '<br/>')
+    print('"profit" :', round(profit, 1), ',')
+    print('"profit_rate" :', round(profit / total_price * 100, 1), ',')
 
 active_order = 0
 orders = prv.get_active_orders(PAIR)
@@ -84,7 +91,7 @@ for order in orders['orders']:
     if matching_order(join(DIR, 'orders.txt'), order['order_id']):
         active_order += 1
 
-print('active order     :', active_order, '<br/>')
+print('"active order" :', active_order, ',')
 
 try:
     with open(join(DIR, 'time.txt'), 'r') as file:
@@ -92,4 +99,5 @@ try:
 except FileNotFoundError:
     time_str = '-'
 
-print('last order       :', time_str, '<br/>')
+print('"last order" :', '"' + time_str + '"')
+print('}')
