@@ -16,20 +16,26 @@
 			color: #fff;
 			padding: 20px;
 			display: flex;
-			justify-content: space-between;
-			align-items: center;
 		}
 		h1 {
+			background-color: #333;
 			margin: 0;
 			font-size: 32px;
+			text-align: center;
+			margin:  0 auto;
 		}
 		main {
-			margin: 20px;
+			margin: 0 auto;
+			width: 300px;
+			padding: 10px;
+		}
+		p {
+			margin-bottom: 30px;
 		}
 		form {
 			display: flex;
-			margin-top: 20px;
-			margin-bottom: 20px;
+			margin-top: 5px;
+			margin-bottom: 5px;
 		}
 		label {
 			margin-right: 10px;
@@ -37,19 +43,57 @@
 		}
 		input[type="number"] {
 			padding: 10px;
+			margin-right: 10px;
 			font-size: 16px;
 			border: 1px solid #ccc;
-			border-radius: 5px;
-			width: 150px;
+			width: 200px;
 		}
-		button {
+
+		.button-normal {
 			padding: 10px;
 			background-color: #333;
 			color: #fff;
-			border: none;
-			border-radius: 5px;
+			border: 0.5px solid #444;
 			cursor: pointer;
 			font-size: 16px;
+			width: 100%;
+			font-weight: bold;
+		}
+
+		.menu-button {
+			background-color: #333;
+			color: white;
+			border: 1px solid #444;
+			padding: 10px;
+			font-size: 16px;
+			cursor: pointer;
+			float: right;
+			margin-top: 0px;
+			font-weight: bold;
+			border-radius: 5px;
+		}
+
+		.menu {
+			display: none;
+			position: absolute;
+			top: 70px;
+			right: 0;
+			background-color: transparent;
+			min-width: 160px;
+			box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+			z-index: 1;
+			flex-direction: column;
+		}
+
+		.menu a {
+			color: black;
+			padding: 12px 16px;
+			text-decoration: none;
+			display: block;
+		}
+
+		.menu a:hover {
+			background-color: #f1f1f1;
 		}
 
 		.popup-form-container {
@@ -70,7 +114,7 @@
 			margin: auto;
 			padding: 20px;
 			border: 1px solid #888;
-			width: 170px;
+			width: 230px;
 		}
 		
 		.popup-form {
@@ -91,6 +135,17 @@
 			text-decoration: none;
 			cursor: pointer;
 		}
+
+		.overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.5);
+			z-index: 1;
+			display: none;
+		}
 	</style>
 	<script>
 		function getInfo() {
@@ -106,7 +161,7 @@
 						document.getElementById("interval").innerHTML = resp.interval + " 秒";
 						document.getElementById('start-stop-button').removeEventListener('click', enableNewOrder);
 						document.getElementById('start-stop-button').addEventListener('click', disableNewOrder);
-						document.getElementById('start-stop-button').innerHTML = '定期購入を停止';
+						document.getElementById('start-stop-button').innerText = '停止';
 						document.getElementById('start-stop-button').style.visibility = 'visible';
 					} else {
 						alert('定期購入は停止しています');
@@ -115,7 +170,7 @@
 						document.getElementById("interval").innerHTML = resp.interval + " 秒";
 						document.getElementById('start-stop-button').removeEventListener('click', disableNewOrder);
 						document.getElementById('start-stop-button').addEventListener('click', enableNewOrder);
-						document.getElementById('start-stop-button').innerHTML = '定期購入を開始';
+						document.getElementById('start-stop-button').innerText = '開始';
 						document.getElementById('start-stop-button').style.visibility = 'visible';
 					}
 				}
@@ -167,10 +222,10 @@
 		}
 
 		function enableNewOrder() {
-			if (confirm("定期購入を開始しますか")) {
+		//	if (confirm("定期購入を開始しますか")) {
 				var popupFormContainer = document.getElementById("popupFormContainer");
 				popupFormContainer.style.display = "block";
-			}
+		//	}
 		}
 
 		function showTorAddr() {
@@ -204,6 +259,22 @@
 		}
 
 		window.onload = function(){
+			var btn = document.getElementById("menu-button");
+			btn.addEventListener("click", function() {
+				var menu = document.getElementById("menu");
+				menu.style.display = "flex";
+				var overlay = document.querySelector('.overlay');
+				overlay.style.display = 'block';
+			});
+
+			var overlay = document.querySelector('.overlay');
+			overlay.addEventListener('click', () => {
+				var menu = document.getElementById("menu");
+				menu.style.display = "none";
+				var overlay = document.querySelector('.overlay');
+				overlay.style.display = 'none';
+			});
+
 			var form = document.getElementById("spot-order-form");
 			form.addEventListener("submit", function(event) {
 				event.preventDefault();
@@ -235,51 +306,54 @@
 <body>
 	<header>
 		<h1>Buy Bitcoin</h1>
-		<div>
-			<button onclick="showTorAddr()">Torアドレス</button>
-			<button onclick="window.open('api_key.html')">APIキー</button>
-			<button onclick="window.open('/cgi-bin/backup.py')">バックアップ</button>
-			<button onclick="window.open('restore.html')">復元</button>
+		<button id="menu-button" class="menu-button">MENU</button>
+	<div class="overlay">
+		<div id="menu" class="menu">
+			<button class="button-normal" onclick="showTorAddr()">Torアドレス</button>
+			<button class="button-normal" onclick="window.open('api_key.html')">APIキー</button>
+			<button class="button-normal" onclick="window.open('/cgi-bin/backup.py')">バックアップ</button>
+			<button class="button-normal" onclick="window.open('restore.html')">復元</button>
+		</div>
 		</div>
 	</header>
 	<main>
 		<p>
-		<h3>定期購入</h3>
-		次回購入：<span id="time-remaining"> loading... </span><br/>
-		購入金額：<span id="purchase"></span><br/>
-		購入間隔：<span id="interval"></span>
+			<h3>スポット購入</h3>
+			現在価格：<span id="current-price"></span><br/>
+			<form id="spot-order-form">
+				<input type="number" id="spot-order-form-purchase" placeholder="購入金額（円）">
+				<button type="submit" class="button-normal">注文</button>
+			</form>
 		</p>
 		<p>
-		<h3>資産</h3>
-		保有数　：<span id="total-amount">loading...</span><br/>
-		購入単価：<span id="unit-price"></span><br/>
-		購入価額：<span id="total-payment"></span><br/>
-		時価評価：<span id="market-value"></span><br/>
-		評価損益：<span id="profit"></span><br/>
+			<h3>定期購入</h3>
+			次回購入：<span id="time-remaining"> loading... </span><br/>
+			購入金額：<span id="purchase"></span><br/>
+			購入間隔：<span id="interval"></span><br/>
+		<p>
+			<button id="start-stop-button" class="button-normal">停止</button>
 		</p>
 		<p>
-		<h3>スポット購入</h3>
-		現在価格：<span id="current-price"></span><br/>
+			<h3>資産</h3>
+			保有数　：<span id="total-amount">loading...</span><br/>
+			購入単価：<span id="unit-price"></span><br/>
+			購入価額：<span id="total-payment"></span><br/>
+			時価評価：<span id="market-value"></span><br/>
+			評価損益：<span id="profit"></span><br/>
+			<p>
+				<button class="button-normal" onclick="window.open('/cgi-bin/history.py')">購入履歴</button>
+			</p>
 		</p>
-		<form id="spot-order-form">
-			<input type="number" id="spot-order-form-purchase" placeholder="購入金額（円）">
-			<button type="submit">注文</button>
-		</form>
-		<form method="get" action="/cgi-bin/history.py" target="_blank">
-			<button type="submit" id="purchase-history">購入履歴</button>
-		</form>
-		<button style="visibility:hidden" id="start-stop-button"></button>
-
 		<div class="popup-form-container" id="popupFormContainer">
 			<div class="popup-form-div">
 				<span class="popup-close" id="closeButton">&times;</span>
-				<h3>定期購入</h3>
+				<h2>定期購入</h2>
 				<form class="popup-form" id="start-new-order-form">
 					<label for="popup-form-purchase">購入金額（円）</label><br/>
 					<input type="number" id="start-new-order-form-purchase" name="popup-form-purchase"><br/>
 					<label for="popup-form-interval">インターバル（秒）</label><br/>
 					<input type="number" id="start-new-order-form-interval" name="popup-form-interval"><br/>
-					<button type="submit">定期購入を開始</button>
+					<button type="submit" class="button-normal">開始</button>
 				</form>
 			</div>
 		</div>
