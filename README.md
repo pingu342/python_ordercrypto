@@ -158,6 +158,27 @@ Torはサポート外
     - 対象は、config.yaml、orders.txt、time.txt、APIキー
     - Dockerで実行時はこれらのファイルをコンテナ外のVolumeに保存することで永続化（docker runオプションに`-v my_volume:/home/hoge/data`を付与）
 
+### 起動シーケンス
+
+#### Docker
+
+    su hoge
+
+    export ENV_ORDERCRYPTO_DATA_DIR=/home/hoge/data  ＊config.yaml、orders.txt、time.txt、APIキーを保存するディレクトリ
+    
+    ./start.sh
+        |
+        | -> tor &
+        |
+        | -> start_server.sh &
+        |       |
+        |       | -> python -m http.server 5555 --cgi
+        |
+        | -> while(1) order.sh
+                       |
+                       | -> python3 order.py
+
+
 ### 購入状況の確認
 
 `balance.sh`、及び、ブラウザのサマリーや購入状況の画面は、orders.txtに記載されたorder_idの取引結果をbitbankccに問い合わせた結果を出力する。
