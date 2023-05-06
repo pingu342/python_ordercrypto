@@ -7,6 +7,11 @@ if [ -z $ENV_ORDERCRYPTO_DATA_DIR ]; then
 fi
 
 dir=$ENV_ORDERCRYPTO_DATA_DIR
+if ! [ -d $dir ]; then
+	echo 'The directory specified in ENV_ORDERCRYPTO_DATA_DIR environment variable does not exist.' >&2
+	exit -1
+fi
+
 file='config.yaml'
 path="${dir%/}/${file}"
 echo "Check $path"
@@ -25,12 +30,10 @@ done
 export APP_HIDDEN_SERVICE=$(cat $file | tr -d '[:space:]')
 
 echo 'Start Http server.'
-. ~/virtualenv/bitbankcc/bin/activate
-cd server
-python -m http.server 5555 --cgi &
+./start_server.sh >> $dir/server_log.txt 2>&1 &
 
-cd ..
 echo 'Start ordering periodicaly.'
 while true;do
-  python order.py; sleep 60
+ ./order.sh >> $dir/order_log.txt 2>&1; sleep 60
 done
+
