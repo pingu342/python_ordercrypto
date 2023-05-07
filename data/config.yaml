@@ -1,5 +1,5 @@
 settings:
   buy_yen: 2000
   interval: 17280
-  new_order: false
+  new_order: true
   pair: btc_jpy
