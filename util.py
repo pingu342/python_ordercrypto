@@ -1,5 +1,10 @@
 import datetime
 
+def get_current_time():
+    now = datetime.datetime.now()
+    japan_tz = datetime.timezone(datetime.timedelta(hours=9))
+    return now.astimezone(japan_tz)
+
 def save_current_time(file_path):
     # 現在時刻を取得
     now = datetime.datetime.now()

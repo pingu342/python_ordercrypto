@@ -37,15 +37,19 @@ load_dotenv(join(DIR, '.env'))
 API_KEY = os.environ.get("ENV_KEY")
 API_SECRET = os.environ.get("ENV_SECRET")
 
+print('Content-type: text/html; charset=UTF-8\r\n')
+
+if len(API_KEY) == 0 or len(API_SECRET) == 0:
+    print('APIキーが設定されてません')
+    sys.exit()
+
 pub = python_bitbankcc.public()
 prv = python_bitbankcc.private(API_KEY, API_SECRET)
 
-print('Content-type: text/html; charset=UTF-8\r\n')
-
 try:
     orders = prv.get_active_orders(PAIR)
-except TypeError:
-    print('Private api error. Bad key and secret')
+except Exception as e:
+    print(e)
     sys.exit()
 
 print('注文中', '<br/>')
@@ -61,8 +65,8 @@ for order in orders['orders']:
 
 try:
     value = prv.get_trade_history(PAIR, 1000)
-except TypeError:
-    print('Private api error. Bad key and secret')
+except Exception as e:
+    print(e)
     sys.exit()
 
 # print(json.dumps(value))

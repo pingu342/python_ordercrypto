@@ -20,13 +20,20 @@ try:
 except:
     print('{')
     print('"result" : false,')
-    print('"error" : "Inpur parameter error."')
+    print('"error" : "購入金額の指定がありません"')
     print('}')
     sys.exit()
 
 load_dotenv(join(DIR, '.env'))
 API_KEY = os.environ.get("ENV_KEY")
 API_SECRET = os.environ.get("ENV_SECRET")
+
+if len(API_KEY) == 0 or len(API_SECRET) == 0:
+    print('{')
+    print('"result" : false,')
+    print('"error" : "APIキーが設定されてません"')
+    print('}')
+    sys.exit()
 
 pub = python_bitbankcc.public()
 prv = python_bitbankcc.private(API_KEY, API_SECRET)
@@ -40,7 +47,7 @@ amount = round(purchase / price, 6)
 if amount <= 0.0001:
     print('{')
     print('"result" : false,')
-    print('"error" : "Inpur parameter error."')
+    print('"error" : "購入金額が少なすぎます"')
     print('}')
     sys.exit()
 
@@ -52,10 +59,10 @@ try:
             side = 'buy',
             order_type = 'limit'
             )
-except TypeError:
+except Exception as e:
     print('{')
     print('"result" : false,')
-    print('"error" : "Bad API key."')
+    print('"error" : "', e, '"')
     print('}')
     sys.exit()
 

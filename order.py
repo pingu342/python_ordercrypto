@@ -4,7 +4,7 @@ import yaml
 import sys
 from os.path import join, dirname
 from dotenv import load_dotenv
-from util import save_current_time, calculate_time_diff
+from util import get_current_time, save_current_time, calculate_time_diff
 
 DIR = os.environ.get("ENV_ORDERCRYPTO_DATA_DIR")
 
@@ -43,9 +43,15 @@ def delete_matching_order(file_path, order_id):
 
 if __name__ == '__main__':
 
+    print(str(get_current_time()))
+
     load_dotenv(join(DIR, '.env'))
     API_KEY = os.environ.get("ENV_KEY")
     API_SECRET = os.environ.get("ENV_SECRET")
+
+    if len(API_KEY) == 0 or len(API_SECRET) == 0:
+        print('API key not set')
+        sys.exit()
 
     pub = python_bitbankcc.public()
     prv = python_bitbankcc.private(API_KEY, API_SECRET)
@@ -56,7 +62,6 @@ if __name__ == '__main__':
     price = int(float(value["bids"][0][0])*0.9999)
     amount = BUY_YEN / price
 
-    print('[bids]')
     print('price', price)
     print('amount', amount)
 
@@ -65,8 +70,9 @@ if __name__ == '__main__':
     # 未約定の定期購入の注文はキャンセルして再注文
     try:
         orders = prv.get_active_orders(PAIR)
-    except TypeError:
-        print('Private api error. Bad key and secret')
+    except Exception as e:
+        print('API returned an error.')
+        print(e)
         sys.exit()
         
     for order in orders['orders']:
@@ -89,15 +95,19 @@ if __name__ == '__main__':
     # 定期購入の新規/再注文のカウントだけ指値注文
     for i in range(new_order + re_order):
         print('[new order]')
-        order_result = prv.order( 
-                                 pair = PAIR,
-                                 price = str(price),
-                                 amount = str(amount),
-                                 side = 'buy',
-                                 order_type = 'limit'
-                                 )
-
-        print(json.dumps(order_result))
+        try:
+            order_result = prv.order( 
+                                     pair = PAIR,
+                                     price = str(price),
+                                     amount = str(amount),
+                                     side = 'buy',
+                                     order_type = 'limit'
+                                     )
+        except Exception as e:
+            print('API returned an error.')
+            print(e)
+        else:
+            print(json.dumps(order_result))
 
         # order_idを保存
         with open(join(DIR, 'orders.txt'), 'a') as file:

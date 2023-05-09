@@ -20,14 +20,16 @@ if ! [ -e $path ]; then
 	cp -R data/. $dir
 fi
 
-echo 'Start tor'
-tor &
-file=/var/lib/tor/hidden_service/hostname
-while [ ! -f "$file" ]
-do
-  sleep 1
-done
-export APP_HIDDEN_SERVICE=$(cat $file | tr -d '[:space:]')
+if type "tor" > /dev/null 2>&1; then
+	echo 'Start tor'
+	tor &
+	file=/var/lib/tor/hidden_service/hostname
+	while [ ! -f "$file" ]
+	do
+		sleep 1
+	done
+	export APP_HIDDEN_SERVICE=$(cat $file | tr -d '[:space:]')
+fi
 
 echo 'Start Http server.'
 ./start_server.sh >> $dir/server_log.txt 2>&1 &

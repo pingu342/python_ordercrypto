@@ -39,15 +39,22 @@ API_SECRET = os.environ.get("ENV_SECRET")
 
 print('Content-type: application/json\r\n')
 
+if len(API_KEY) == 0 or len(API_SECRET) == 0:
+    print('{')
+    print('"result" : false,')
+    print('"error" : "APIキーが設定されてません"')
+    print('}')
+    sys.exit()
+
 pub = python_bitbankcc.public()
 prv = python_bitbankcc.private(API_KEY, API_SECRET)
 
 try:
     value = prv.get_trade_history(PAIR, 1000)
-except TypeError:
+except Exception as e:
     print('{')
     print('"result" : false,')
-    print('"error" : "Bad API key"')
+    print('"error" : "', e, '"')
     print('}')
     sys.exit()
 
