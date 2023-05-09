@@ -39,7 +39,7 @@ API_SECRET = os.environ.get("ENV_SECRET")
 
 print('Content-type: application/json\r\n')
 
-if len(API_KEY) == 0 or len(API_SECRET) == 0:
+if not API_KEY or not API_SECRET:
     print('{')
     print('"result" : false,')
     print('"error" : "APIキーが設定されてません"')

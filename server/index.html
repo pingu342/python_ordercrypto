@@ -193,7 +193,7 @@
 						document.getElementById("profit").innerHTML = resp.profit + ' 円 (' + resp.profit_rate + '%)';
 						document.getElementById("current-price").innerHTML = resp.current_price + ' 円/BTC';
 					} else {
-						document.getElementById("total-amount").innerHTML = 'APIキー不正';
+						document.getElementById("total-amount").innerHTML = resp.error;
 					}
 				}
 			};

@@ -28,7 +28,7 @@ load_dotenv(join(DIR, '.env'))
 API_KEY = os.environ.get("ENV_KEY")
 API_SECRET = os.environ.get("ENV_SECRET")
 
-if len(API_KEY) == 0 or len(API_SECRET) == 0:
+if not API_KEY or not API_SECRET:
     print('{')
     print('"result" : false,')
     print('"error" : "APIキーが設定されてません"')
