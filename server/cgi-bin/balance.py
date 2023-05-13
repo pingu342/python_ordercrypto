@@ -80,6 +80,8 @@ print('"total_amount" :', round(total_amount, 6), ',')
 print('"total_payment" :', round(total_price, 1), ',')
 if total_amount > 0:
     print('"unit_price" :', round(total_price/total_amount, 1), ',')
+else:
+    print('"unit_price" : 0,')
 
 value = pub.get_depth(pair = PAIR)
 current_price = float(value["bids"][0][0])
@@ -91,6 +93,9 @@ profit = current_price * total_amount - total_price;
 if total_price > 0:
     print('"profit" :', round(profit, 1), ',')
     print('"profit_rate" :', round(profit / total_price * 100, 1), ',')
+else:
+    print('"profit" : 0,')
+    print('"profit_rate" : 0,')
 
 active_order = 0
 orders = prv.get_active_orders(PAIR)
