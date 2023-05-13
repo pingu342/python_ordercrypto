@@ -1,220 +1,234 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="utf-8">
-<title>Chart</title>
-<style>
-  header {
-    background-color: #333;
-    color: #fff;
-    padding: 20px;
-    display: flex;
-  }
-  h1 {
-    background-color: #333;
-    margin: 0;
-    font-size: 32px;
-    text-align: center;
-    margin:  0 auto;
-  }
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: sans-serif;
-    background-color: #f2f2f2;
-  }
-  main {
-    margin: 0 auto;
-    width: 80%;
-    padding: 10px;
-  }
-  .chart {
-    margin-bottom: 30px;
-  }
-</style>
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
-<script>
-  window.onload = function() {
-    var xhr = new XMLHttpRequest();
-    var url = "/cgi-bin/data.py";
-    xhr.open("GET", url, true);
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4 && xhr.status === 200) {
-        var resp = JSON.parse(xhr.responseText);
-        var ctx = document.getElementById('price');
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: resp.date,
-            datasets: [{
-              label: '価格（円/BTC）',
-              data: resp.price,
-              borderColor: '#48f',
-              borderWidth: 2,
-              pointRadius: 0
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: false
-              },
-              x: {
-                ticks: {
-                  autoSkip: true,
-                  maxTicksLimit: 2
-                }
-              }
-            }
-          }
-        });
+	<head>
+		<meta charset="utf-8">
+		<title>Chart</title>
+		<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: sans-serif;
+			background-color: #f2f2f2;
+		}
+		header {
+			background-color: #333;
+			color: #fff;
+			padding: 20px;
+			display: flex;
+		}
+		h1 {
+			background-color: #333;
+			margin: 0;
+			font-size: 32px;
+			text-align: center;
+			margin:  0 auto;
+		}
+		main {
+			margin: 0 auto;
+			width: 80%;
+			padding: 10px;
+		}
+		p {
+			margin-bottom: 30px;
+		}
+		.chart {
+			margin: 0;
+			background-color: #fff8;
+		}
+		</style>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+		<script>
+			window.onload = function() {
+				var xhr = new XMLHttpRequest();
+				var url = "/cgi-bin/data.py";
+				xhr.open("GET", url, true);
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState === 4 && xhr.status === 200) {
+						var resp = JSON.parse(xhr.responseText);
+						var ctx = document.getElementById('price');
+						new Chart(ctx, {
+							type: 'line',
+							data: {
+								labels: resp.date,
+								datasets: [{
+									label: '価格（円/BTC）',
+									data: resp.price,
+									borderColor: '#48f',
+									borderWidth: 2,
+									pointRadius: 0
+								}]
+							},
+							options: {
+								scales: {
+									y: {
+										beginAtZero: false
+									},
+									x: {
+										ticks: {
+											autoSkip: true,
+											maxTicksLimit: 2
+										}
+									}
+								}
+							}
+						});
 
-        ctx = document.getElementById('amount');
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: resp.date,
-            datasets: [{
-              label: '購入数（BTC）',
-              data: resp.amount,
-              borderColor: '#f88',
-              borderWidth: 2,
-              pointRadius: 0
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: false
-              },
-              x: {
-                ticks: {
-                  autoSkip: true,
-                  maxTicksLimit: 2
-                }
-              }
-            }
-          }
-        });
+						ctx = document.getElementById('amount');
+						new Chart(ctx, {
+							type: 'line',
+							data: {
+								labels: resp.date,
+								datasets: [{
+									label: '購入数（BTC）',
+									data: resp.amount,
+									borderColor: '#f88',
+									borderWidth: 2,
+									pointRadius: 0
+								}]
+							},
+							options: {
+								scales: {
+									y: {
+										beginAtZero: false
+									},
+									x: {
+										ticks: {
+											autoSkip: true,
+											maxTicksLimit: 2
+										}
+									}
+								}
+							}
+						});
 
-        ctx = document.getElementById('unit_price');
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: resp.date,
-            datasets: [{
-              label: '購入単価（円/BTC）',
-              data: resp.unit_price,
-              borderColor: '#484',
-              borderWidth: 2,
-              pointRadius: 0
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: false
-              },
-              x: {
-                ticks: {
-                  autoSkip: true,
-                  maxTicksLimit: 2
-                }
-              }
-            }
-          }
-        });
+						ctx = document.getElementById('unit_price');
+						new Chart(ctx, {
+							type: 'line',
+							data: {
+								labels: resp.date,
+								datasets: [{
+									label: '購入単価（円/BTC）',
+									data: resp.unit_price,
+									borderColor: '#484',
+									borderWidth: 2,
+									pointRadius: 0
+								}]
+							},
+							options: {
+								scales: {
+									y: {
+										beginAtZero: false
+									},
+									x: {
+										ticks: {
+											autoSkip: true,
+											maxTicksLimit: 2
+										}
+									}
+								}
+							}
+						});
 
-        /*
-        ctx = document.getElementById('purchase');
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: resp.date,
-            datasets: [{
-              label: '購入価額（円）',
-              data: resp.purchase,
-              borderColor: '#48f',
-              borderWidth: 2,
-              pointRadius: 0
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: false
-              },
-              x: {
-                ticks: {
-                  autoSkip: true,
-                  maxTicksLimit: 2
-                }
-              }
-            }
-          }
-        });
-        */
-        ctx = document.getElementById('profit');
-        new Chart(ctx, {
-          type: 'line',
-          data: {
-            labels: resp.date,
-            datasets: [{
-              label: '評価損益（円）',
-              data: resp.profit,
-              borderColor: '#48f',
-              borderWidth: 2,
-              pointRadius: 0
-            }]
-          },
-          options: {
-            scales: {
-              y: {
-                beginAtZero: false
-              },
-              x: {
-                ticks: {
-                  autoSkip: true,
-                  maxTicksLimit: 2
-                }
-              }
-            }
-          }
-        });
-      }
-    }
-    xhr.send();
-  }
-</script>
-</head>
-<body>
-	<header>
-		<h1>Chart</h1>
-	</header>
-<main>
-<div class="chart">
-  <h3>ビットコイン価格</h3>
-  <canvas id="price"></canvas>
-</div>
-<div class="chart">
-  <h3>購入数</h3>
-  <canvas id="amount"></canvas>
-</div>
-<div class="chart">
-  <h3>購入単価</h3>
-  <canvas id="unit_price"></canvas>
-</div>
-<!--
-<div class="chart">
-  <h3>購入価額</h3>
-  <canvas id="purchase"></canvas>
-</div>
--->
-<div class="chart">
-  <h3>評価損益</h3>
-  <canvas id="profit"></canvas>
-</div>
-</main>
-</body>
+						/*
+		ctx = document.getElementById('purchase');
+		new Chart(ctx, {
+		  type: 'line',
+		  data: {
+			labels: resp.date,
+			datasets: [{
+			  label: '購入価額（円）',
+			  data: resp.purchase,
+			  borderColor: '#48f',
+			  borderWidth: 2,
+			  pointRadius: 0
+			}]
+		  },
+		  options: {
+			scales: {
+			  y: {
+				beginAtZero: false
+			  },
+			  x: {
+				ticks: {
+				  autoSkip: true,
+				  maxTicksLimit: 2
+				}
+			  }
+			}
+		  }
+		});
+						 */
+						ctx = document.getElementById('profit');
+						new Chart(ctx, {
+							type: 'line',
+							data: {
+								labels: resp.date,
+								datasets: [{
+									label: '評価損益（円）',
+									data: resp.profit,
+									borderColor: '#48f',
+									borderWidth: 2,
+									pointRadius: 0
+								}]
+							},
+							options: {
+								scales: {
+									y: {
+										beginAtZero: false
+									},
+									x: {
+										ticks: {
+											autoSkip: true,
+											maxTicksLimit: 2
+										}
+									}
+								}
+							}
+						});
+					}
+				}
+				xhr.send();
+			}
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>Chart</h1>
+		</header>
+		<main>
+			<p class="chart">
+			<h3>ビットコイン価格</h3>
+			<div class="chart">
+				<canvas id="price"></canvas>
+			</div>
+			</p>
+			<p>
+			<h3>購入数</h3>
+			<div class="chart">
+				<canvas id="amount"></canvas>
+			</div>
+			</p>
+			<p>
+			<h3>購入単価</h3>
+			<div class="chart">
+				<canvas id="unit_price"></canvas>
+			</div>
+			</p>
+			<!--
+	   <p>
+	   <h3>購入価額</h3>
+	   <div class="chart">
+	   <canvas id="purchase"></canvas>
+	   </div>
+	   </p>
+			-->
+			<p>
+			<h3>評価損益</h3>
+			<div class="chart">
+				<canvas id="profit"></canvas>
+			</div>
+			</p>
+		</main>
+	</body>
 </html>
