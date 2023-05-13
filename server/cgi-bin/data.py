@@ -4,6 +4,7 @@ import os, json, time
 import yaml
 import sys
 import json
+import math
 from os.path import join, dirname
 from dotenv import load_dotenv
 
@@ -76,7 +77,7 @@ for trade in trades:
         amount = float(trade['amount'])
         price = float(trade['price'])
         t = time.localtime(int(trade['executed_at'])/1000 + 60*60*9)
-        date = time.strftime("%Y-%m-%d %H:%M:%S", t)
+        date = time.strftime("%Y-%m-%d %H:%M", t)
         total_amount += amount
         total_purchase += (price * amount)
         profit = price * total_amount - total_purchase
@@ -88,15 +89,44 @@ for trade in trades:
         date_series.append(date)
         profit_series.append(profit)
 
+# 配列の要素を100個に間引く
+# 配列の最初と最後は間引かずに必ず残す
+series_max = 100
+d = 1
+if trade_num > series_max:
+    d = series_max / trade_num
+_amount_series = []
+_purchase_series = []
+_price_series = []
+_unit_price_series = []
+_date_series = []
+_profit_series = []
+n = -1
+for i in range(trade_num):
+    m = -2
+    if (series_max - 1) == (n + 1):
+        if (trade_num - 1) == i:
+            m = -1
+    else:
+        if (i * d - n) >= 1:
+            m = i
+    if m > -2:
+        _amount_series.append(amount_series[m])
+        _purchase_series.append(purchase_series[m])
+        _price_series.append(price_series[m])
+        _unit_price_series.append(unit_price_series[m])
+        _date_series.append(date_series[m])
+        _profit_series.append(profit_series[m])
+        n += 1
+
 resp = {
     "result" : True,
-    "trade" : trade_num,
-    "date" : date_series,
-    "price" : price_series,
-    "unit_price" : unit_price_series,
-    "amount" : amount_series,
-    "purchase" : purchase_series,
-    "profit" : profit_series
+    "date" : _date_series,
+    "price" : _price_series,
+    "unit_price" : _unit_price_series,
+    "amount" : _amount_series,
+    "purchase" : _purchase_series,
+    "profit" : _profit_series
 }
 
 print(json.dumps(resp))
