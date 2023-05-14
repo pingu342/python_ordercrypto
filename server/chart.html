@@ -45,7 +45,7 @@
 		<script>
 			window.onload = function() {
 				var xhr = new XMLHttpRequest();
-				var url = "/cgi-bin/data.py";
+				var url = "/cgi-bin/chart.py";
 				xhr.open("GET", url, true);
 				xhr.onreadystatechange = function () {
 					if (xhr.readyState === 4 && xhr.status === 200) {
@@ -214,7 +214,7 @@
 	</head>
 	<body>
 		<header>
-			<h1>Chart</h1>
+			<h1>チャート</h1>
 		</header>
 		<main>
 			<p>

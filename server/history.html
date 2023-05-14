@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>購入履歴</title>
+		<style>
+		body {
+			margin: 0;
+			padding: 0;
+			font-family: sans-serif;
+			font-size: 7pt;
+			background-color: #f2f2f2;
+		}
+		header {
+			background-color: #333;
+			color: #fff;
+			padding: 20px;
+			display: flex;
+		}
+		h1 {
+			background-color: #333;
+			margin: 0;
+			font-size: 32px;
+			text-align: center;
+			margin:  0 auto;
+		}
+		main {
+			margin: 0 auto;
+			width: 90%;
+		}
+		.design01 {
+			width: 100%;
+			text-align: center;
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+		.design01 th {
+			padding: 10px;
+			background: #333;
+			border: solid 1px #000000;
+			color: #fff;
+		}
+		.design01 td {
+			padding: 10px;
+			background: #ffff;
+			border: solid 1px #000000;
+		}
+		</style>
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<script>
+			window.onload = function() {
+				var xhr = new XMLHttpRequest();
+				var url = "/cgi-bin/history.py";
+				xhr.open("GET", url, true);
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState === 4 && xhr.status === 200) {
+						var resp = JSON.parse(xhr.responseText);
+						var div = document.getElementById('history');
+						var html = '';
+						html += "<tr><th> 状態 </th><th> 注文ID </th><th> 注文/約定時間 </th><th> 購入数<br/>(BTC) </th><th> 購入単価<br/>(円/BTC) </th><th> 購入価額<br/>(円) </th></tr>";
+						resp.orders.forEach(function(element) {
+							html += "<tr><td>" + element.status + "</td><td>" + element.order_id + "</td><td>" + element.date + "</td><td>" + element.amount + "</td><td>" + element.price + "</td><td>" + element.purchase + "</td></tr>";
+						});
+						div.innerHTML = html;
+					}
+				}
+				xhr.send();
+			}
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>購入履歴</h1>
+		</header>
+		<main>
+			<p>
+			<div>
+				<table id="history" class="design01">
+				</table>
+			</div>
+			</p>
+		</main>
+	</body>
+</html>

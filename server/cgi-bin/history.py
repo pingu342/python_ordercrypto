@@ -37,7 +37,7 @@ load_dotenv(join(DIR, '.env'))
 API_KEY = os.environ.get("ENV_KEY")
 API_SECRET = os.environ.get("ENV_SECRET")
 
-print('Content-type: text/html; charset=UTF-8\r\n')
+print('Content-type: application/json\r\n')
 
 if not API_KEY or not API_SECRET:
     print('APIキーが設定されてません')
@@ -52,25 +52,23 @@ except Exception as e:
     print(e)
     sys.exit()
 
-h = '<tr><th>'
-d = '</th><th>'
-e = '</th></tr>'
+series = []
 
-print('<html>')
-print('<header>')
-print('<meta name="viewport" content="width=device-width">')
-print('</header>')
-print('<body>')
-print('<table border="1" cellpadding="3">')
-print(h, '状態', d, '注文ID', d, '注文/約定時間', d, '購入数<br/>(BTC)', d, '購入単価<br/>(円/BTC)', d, '購入価額<br/>(円)', e)
 for order in orders['orders']:
     if matching_order(join(DIR, 'orders.txt'), order['order_id']):
         a = order['start_amount']
         p = order['price']
-        r = int(float(a) * float(p))
         t = time.localtime(int(order['ordered_at'])/1000 + 60*60*9)
-        print(h, '注文中', d, order['order_id'], d,
-                time.strftime("%Y-%m-%d %H:%M:%S", t), d, a, d, p, d, r, e)
+        t = time.strftime("%Y-%m-%d %H:%M:%S", t)
+        d = {
+            "order_id" : order['order_id'],
+            "status" : '注文中',
+            "amount" : a,
+            "price" : p,
+            "purchase" : int(float(a) * float(p)),
+            "date" : t,
+        }
+        series.append(d)
 
 try:
     value = prv.get_trade_history(PAIR, 1000)
@@ -85,11 +83,22 @@ for trade in value['trades']:
     if matching_order(join(DIR, 'orders.txt'), trade['order_id']):
         a = trade['amount']
         p = trade['price']
-        r = int(float(a) * float(p))
         t = time.localtime(int(trade['executed_at'])/1000 + 60*60*9)
-        print(h, '約定', d, trade['order_id'], d,
-                time.strftime("%Y-%m-%d %H:%M:%S", t), d, a, d, p, d, r, e)
-print('</table>')
-print('</body>')
-print('</html>')
+        t = time.strftime("%Y-%m-%d %H:%M:%S", t)
+        d = {
+            "order_id" : trade['order_id'],
+            "status" : '約定',
+            "amount" : a,
+            "price" : p,
+            "purchase" : int(float(a) * float(p)),
+            "date" : t,
+        }
+        series.append(d)
+
+resp = {
+    "result" : True,
+    "orders" : series
+}
+
+print(json.dumps(resp))
 
