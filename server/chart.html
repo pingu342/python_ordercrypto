@@ -42,6 +42,7 @@
 		</style>
 		<meta name="viewport" content="width=device-width,initial-scale=1.0">
 		<script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.0/dist/chart.umd.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 		<script>
 			window.onload = function() {
 				var xhr = new XMLHttpRequest();
@@ -51,35 +52,48 @@
 					if (xhr.readyState === 4 && xhr.status === 200) {
 						var resp = JSON.parse(xhr.responseText);
 						var ctx = document.getElementById('price');
+						var opt = {
+							scales: {
+								y: {
+									beginAtZero: false
+								},
+								x: {
+									type: 'time',
+									time: {
+										parser: 'yyyy-MM-dd HH:mm',
+										unit: 'day',
+										stepSize: 1,
+										displayFormats: {
+											'day': 'yyyy/MM/dd'
+										}
+									},
+									ticks: {
+										autoSkip: true,
+										maxTicksLimit: 2
+									}
+								}
+							},
+							plugins: {
+								legend: {
+									display: false  // 凡例
+								}
+							}
+						};
 						new Chart(ctx, {
 							type: 'line',
 							data: {
 								labels: resp.date,
 								datasets: [{
+									// label: "ビットコイン価格",  // 凡例
 									data: resp.price,
 									borderColor: '#333',
 									borderWidth: 1,
-									pointRadius: 0
+									pointRadius: 2,
+									lineTension: 0.1,
+									fill: true
 								}]
 							},
-							options: {
-								scales: {
-									y: {
-										beginAtZero: false
-									},
-									x: {
-										ticks: {
-											autoSkip: true,
-											maxTicksLimit: 2
-										}
-									}
-								},
-								plugins: {
-									legend: {
-										display: false
-									}
-								}
-							}
+							options: opt
 						});
 
 						ctx = document.getElementById('amount');
@@ -91,27 +105,12 @@
 									data: resp.amount,
 									borderColor: '#333',
 									borderWidth: 1,
-									pointRadius: 0
+									pointRadius: 2,
+									lineTension: 0.1,
+									fill: true
 								}]
 							},
-							options: {
-								scales: {
-									y: {
-										beginAtZero: false
-									},
-									x: {
-										ticks: {
-											autoSkip: true,
-											maxTicksLimit: 2
-										}
-									}
-								},
-								plugins: {
-									legend: {
-										display: false
-									}
-								}
-							}
+							options: opt
 						});
 
 						ctx = document.getElementById('unit_price');
@@ -123,27 +122,12 @@
 									data: resp.unit_price,
 									borderColor: '#333',
 									borderWidth: 1,
-									pointRadius: 0
+									pointRadius: 2,
+									lineTension: 0.1,
+									fill: true
 								}]
 							},
-							options: {
-								scales: {
-									y: {
-										beginAtZero: false
-									},
-									x: {
-										ticks: {
-											autoSkip: true,
-											maxTicksLimit: 2
-										}
-									}
-								},
-								plugins: {
-									legend: {
-										display: false
-									}
-								}
-							}
+							options: opt
 						});
 
 						/*
@@ -184,27 +168,12 @@
 									data: resp.profit,
 									borderColor: '#333',
 									borderWidth: 1,
-									pointRadius: 0
+									pointRadius: 2,
+									lineTension: 0.1,
+									fill: true
 								}]
 							},
-							options: {
-								scales: {
-									y: {
-										beginAtZero: false
-									},
-									x: {
-										ticks: {
-											autoSkip: true,
-											maxTicksLimit: 2
-										}
-									}
-								},
-								plugins: {
-									legend: {
-										display: false
-									}
-								}
-							}
+							options: opt
 						});
 					}
 				}

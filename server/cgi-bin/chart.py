@@ -89,9 +89,9 @@ for trade in trades:
         date_series.append(date)
         profit_series.append(profit)
 
-# 配列の要素を100個に間引く
+# 配列の要素をseries_max個に間引く
 # 配列の最初と最後は間引かずに必ず残す
-series_max = 100
+series_max = 12
 d = 1
 if trade_num > series_max:
     d = series_max / trade_num
