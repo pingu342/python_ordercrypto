@@ -90,26 +90,27 @@ for trade in trades:
         profit_series.append(profit)
 
 # 配列の要素をseries_max個に間引く
-# 配列の最初と最後は間引かずに必ず残す
+# 配列の最初と最後は必ず残す
+# 最初と最後の2つを除いた残りから(series_max-2)個を選ぶ
 series_max = 12
 d = 1
 if trade_num > series_max:
-    d = series_max / trade_num
+    d = (trade_num - 2) / (series_max - 1)
 _amount_series = []
 _purchase_series = []
 _price_series = []
 _unit_price_series = []
 _date_series = []
 _profit_series = []
-n = -1
+n = 0
 for i in range(trade_num):
     m = -2
-    if (series_max - 1) == (n + 1):
-        if (trade_num - 1) == i:
-            m = -1
-    else:
-        if (i * d - n) >= 1:
-            m = i
+    if series_max == n:
+        break
+    elif series_max - 1 == n:
+        m = -1
+    elif i >= d * n:
+        m = i
     if m > -2:
         _amount_series.append(amount_series[m])
         _purchase_series.append(purchase_series[m])
