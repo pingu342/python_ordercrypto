@@ -2,8 +2,9 @@
 
 bitbankccの取引所でBitcoinをドルコスト平均法で定期購入する。
 
-<img src="screen.png" width="300px">
+<img src="screen.png" width="200px">
 
+<img src="screen-chart.png" width="200px">
 
 
 ## 1.実行手順
