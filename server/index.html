@@ -158,7 +158,7 @@
 					if (resp.new_order == true) {
 						document.getElementById("time-remaining").innerHTML = "残り " + resp.remain;
 						document.getElementById("purchase").innerHTML = resp.purchase + " 円/回";
-						document.getElementById("interval").innerHTML = resp.interval + " 秒";
+						document.getElementById("interval").innerHTML = resp.interval;
 						document.getElementById('start-stop-button').removeEventListener('click', enableNewOrder);
 						document.getElementById('start-stop-button').addEventListener('click', disableNewOrder);
 						document.getElementById('start-stop-button').innerText = '停止';
@@ -167,7 +167,7 @@
 						alert('定期購入は停止しています');
 						document.getElementById("time-remaining").innerHTML = '停止';
 						document.getElementById("purchase").innerHTML = resp.purchase + " 円/回";
-						document.getElementById("interval").innerHTML = resp.interval + " 秒";
+						document.getElementById("interval").innerHTML = resp.interval;
 						document.getElementById('start-stop-button').removeEventListener('click', disableNewOrder);
 						document.getElementById('start-stop-button').addEventListener('click', enableNewOrder);
 						document.getElementById('start-stop-button').innerText = '開始';
