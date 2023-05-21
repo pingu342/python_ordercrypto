@@ -109,7 +109,7 @@ if __name__ == '__main__':
         else:
             print(json.dumps(order_result))
 
-        # order_idを保存
-        with open(join(DIR, 'orders.txt'), 'a') as file:
-            file.write(str(order_result['order_id']) + '\n')
+            # order_idを保存
+            with open(join(DIR, 'orders.txt'), 'a') as file:
+                file.write(str(order_result['order_id']) + '\n')
 
