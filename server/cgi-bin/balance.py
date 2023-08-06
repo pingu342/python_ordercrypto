@@ -49,29 +49,43 @@ if not API_KEY or not API_SECRET:
 pub = python_bitbankcc.public()
 prv = python_bitbankcc.private(API_KEY, API_SECRET)
 
-try:
-    value = prv.get_trade_history(PAIR, 1000)
-except Exception as e:
-    print('{')
-    print('"result" : false,')
-    print('"error" : "', e, '"')
-    print('}')
-    sys.exit()
-
-# print(json.dumps(value))
-# {"trade_id": 3969372, "order_id": 324460818, "pair": "btc_jpy", "side": "buy", "type": "limit", "amount": "0.0050", "price": "2000000", "maker_taker": "maker", "fee_amount_base": "0.00000000", "fee_amount_quote": "0.0000", "executed_at": 1513733421000}
-
 trade_num = 0
 total_amount = 0.0
 total_price = 0.0
 
-for trade in value['trades']:
-    if matching_order(join(DIR, 'orders.txt'), trade['order_id']):
-        amount = float(trade['amount'])
-        price = float(trade['price'])
-        total_amount += amount
-        total_price += (price * amount)
-        trade_num += 1
+count = 1000
+truncate_trade_id = 0
+since_unix_time = None
+
+while True:
+    try:
+        value = prv.get_trade_history(pair=PAIR, order_count=count, since=since_unix_time, order='asc')
+    except Exception as e:
+        print('{')
+        print('"result" : false,')
+        print('"error" : "', e, '"')
+        print('}')
+        sys.exit()
+
+    # print(json.dumps(value))
+    # {"trade_id": 3969372, "order_id": 324460818, "pair": "btc_jpy", "side": "buy", "type": "limit", "amount": "0.0050", "price": "2000000", "maker_taker": "maker", "fee_amount_base": "0.00000000", "fee_amount_quote": "0.0000", "executed_at": 1513733421000}
+
+    no_value = True
+    for trade in value['trades']:
+        if trade['trade_id'] > truncate_trade_id:
+            no_value = False
+            if matching_order(join(DIR, 'orders.txt'), trade['order_id']):
+                amount = float(trade['amount'])
+                price = float(trade['price'])
+                total_amount += amount
+                total_price += (price * amount)
+                trade_num += 1
+
+    if len(value['trades']) < count or no_value:
+        break
+
+    truncate_trade_id = value['trades'][-1]['trade_id']
+    since_unix_time = value['trades'][-1]['executed_at']
 
 print('{')
 print('"result" : true', ',')

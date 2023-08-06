@@ -70,30 +70,44 @@ for order in orders['orders']:
         }
         series.append(d)
 
-try:
-    value = prv.get_trade_history(PAIR, 1000)
-except Exception as e:
-    print(e)
-    sys.exit()
+count = 1000
+truncate_trade_id = 0
+since_unix_time = None
 
-# print(json.dumps(value))
-# {"trade_id": 3969372, "order_id": 324460818, "pair": "btc_jpy", "side": "buy", "type": "limit", "amount": "0.0050", "price": "2000000", "maker_taker": "maker", "fee_amount_base": "0.00000000", "fee_amount_quote": "0.0000", "executed_at": 1513733421000}
+while True:
+    try:
+        value = prv.get_trade_history(pair=PAIR, order_count=count, since=since_unix_time, order='desc')
+    except Exception as e:
+        print(e)
+        sys.exit()
 
-for trade in value['trades']:
-    if matching_order(join(DIR, 'orders.txt'), trade['order_id']):
-        a = trade['amount']
-        p = trade['price']
-        t = time.localtime(int(trade['executed_at'])/1000 + 60*60*9)
-        t = time.strftime("%Y-%m-%d %H:%M:%S", t)
-        d = {
-            "order_id" : trade['order_id'],
-            "status" : '約定',
-            "amount" : a,
-            "price" : p,
-            "purchase" : int(float(a) * float(p)),
-            "date" : t,
-        }
-        series.append(d)
+    # print(json.dumps(value))
+    # {"trade_id": 3969372, "order_id": 324460818, "pair": "btc_jpy", "side": "buy", "type": "limit", "amount": "0.0050", "price": "2000000", "maker_taker": "maker", "fee_amount_base": "0.00000000", "fee_amount_quote": "0.0000", "executed_at": 1513733421000}
+
+    no_value = True
+    for trade in value['trades']:
+        if trade['trade_id'] > truncate_trade_id:
+            no_value = False
+            if matching_order(join(DIR, 'orders.txt'), trade['order_id']):
+                a = trade['amount']
+                p = trade['price']
+                t = time.localtime(int(trade['executed_at'])/1000 + 60*60*9)
+                t = time.strftime("%Y-%m-%d %H:%M:%S", t)
+                d = {
+                    "order_id" : trade['order_id'],
+                    "status" : '約定',
+                    "amount" : a,
+                    "price" : p,
+                    "purchase" : int(float(a) * float(p)),
+                    "date" : t,
+                }
+                series.append(d)
+
+    if len(value['trades']) < count or no_value:
+        break
+
+    truncate_trade_id = value['trades'][-1]['trade_id']
+    since_unix_time = value['trades'][-1]['executed_at']
 
 resp = {
     "result" : True,

@@ -51,15 +51,6 @@ if not API_KEY or not API_SECRET:
 pub = python_bitbankcc.public()
 prv = python_bitbankcc.private(API_KEY, API_SECRET)
 
-try:
-    value = prv.get_trade_history(PAIR, 1000)
-except Exception as e:
-    print('{')
-    print('"result" : false,')
-    print('"error" : "', e, '"')
-    print('}')
-    sys.exit()
-
 trade_num = 0
 total_amount = 0
 total_purchase = 0
@@ -70,24 +61,45 @@ unit_price_series = []
 date_series = []
 profit_series = []
 
-trades = value['trades']
-trades.reverse()
-for trade in trades:
-    if matching_order(join(DIR, 'orders.txt'), trade['order_id']):
-        amount = float(trade['amount'])
-        price = float(trade['price'])
-        t = time.localtime(int(trade['executed_at'])/1000 + 60*60*9)
-        date = time.strftime("%Y-%m-%d %H:%M", t)
-        total_amount += amount
-        total_purchase += (price * amount)
-        profit = price * total_amount - total_purchase
-        trade_num += 1
-        amount_series.append(total_amount)
-        purchase_series.append(total_purchase)
-        price_series.append(price)
-        unit_price_series.append(total_purchase/total_amount)
-        date_series.append(date)
-        profit_series.append(profit)
+count = 1000
+truncate_trade_id = 0
+since_unix_time = None
+
+while True:
+    try:
+        value = prv.get_trade_history(pair=PAIR, order_count=count, since=since_unix_time, order='asc')
+    except Exception as e:
+        print('{')
+        print('"result" : false,')
+        print('"error" : "', e, '"')
+        print('}')
+        sys.exit()
+
+    no_value = True
+    for trade in value['trades']:
+        if trade['trade_id'] > truncate_trade_id:
+            no_value = False
+            if matching_order(join(DIR, 'orders.txt'), trade['order_id']):
+                amount = float(trade['amount'])
+                price = float(trade['price'])
+                t = time.localtime(int(trade['executed_at'])/1000 + 60*60*9)
+                date = time.strftime("%Y-%m-%d %H:%M", t)
+                total_amount += amount
+                total_purchase += (price * amount)
+                profit = price * total_amount - total_purchase
+                trade_num += 1
+                amount_series.append(total_amount)
+                purchase_series.append(total_purchase)
+                price_series.append(price)
+                unit_price_series.append(total_purchase/total_amount)
+                date_series.append(date)
+                profit_series.append(profit)
+
+    if len(value['trades']) < count or no_value:
+        break
+
+    truncate_trade_id = value['trades'][-1]['trade_id']
+    since_unix_time = value['trades'][-1]['executed_at']
 
 # 配列の要素をseries_max個に間引く
 # 配列の最初と最後は必ず残す
