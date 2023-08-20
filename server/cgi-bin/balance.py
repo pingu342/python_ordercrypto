@@ -52,6 +52,7 @@ prv = python_bitbankcc.private(API_KEY, API_SECRET)
 trade_num = 0
 total_amount = 0.0
 total_price = 0.0
+total_fee = 0.0
 
 count = 1000
 truncate_trade_id = 0
@@ -75,8 +76,10 @@ while True:
         if trade['trade_id'] > truncate_trade_id:
             no_value = False
             if matching_order(join(DIR, 'orders.txt'), trade['order_id']):
+                fee = float(trade['fee_amount_quote'])
                 amount = float(trade['amount'])
                 price = float(trade['price'])
+                total_fee += fee
                 total_amount += amount
                 total_price += (price * amount)
                 trade_num += 1
@@ -90,6 +93,7 @@ while True:
 print('{')
 print('"result" : true', ',')
 print('"number_of_trades" :', trade_num, ',')
+print('"total_fee" :', round(total_fee, 1), ',')
 print('"total_amount" :', round(total_amount, 6), ',')
 print('"total_payment" :', round(total_price, 1), ',')
 if total_amount > 0:

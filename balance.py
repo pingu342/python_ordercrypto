@@ -45,6 +45,7 @@ if __name__ == '__main__':
     trade_num = 0
     total_amount = 0.0
     total_price = 0.0
+    total_fee = 0.0
 
     count = 1000
     truncate_trade_id = 0
@@ -65,8 +66,10 @@ if __name__ == '__main__':
             if trade['trade_id'] > truncate_trade_id:
                 no_value = False
                 if matching_order(join(DIR, 'orders.txt'), trade['order_id']):
+                    fee = float(trade['fee_amount_quote'])
                     amount = float(trade['amount'])
                     price = float(trade['price'])
+                    total_fee += fee
                     total_amount += amount
                     total_price += (price * amount)
                     trade_num += 1
@@ -78,6 +81,7 @@ if __name__ == '__main__':
         since_unix_time = value['trades'][-1]['executed_at']
     
     print('number of trades :', trade_num)
+    print('total fee        :', round(total_fee, 1))
     print('total amount     :', round(total_amount, 6))
     print('purchase price   :', round(total_price, 1))
     if total_amount > 0:

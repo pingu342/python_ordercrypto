@@ -192,6 +192,7 @@
 						document.getElementById("market-value").innerHTML = resp.market_value +  ' 円';
 						document.getElementById("profit").innerHTML = resp.profit + ' 円 (' + resp.profit_rate + '%)';
 						document.getElementById("current-price").innerHTML = resp.current_price + ' 円/BTC';
+						document.getElementById("total-fee").innerHTML = resp.total_fee + ' 円';
 					} else {
 						document.getElementById("current-price").innerHTML = resp.error;
 						document.getElementById("total-amount").innerHTML = resp.error;
@@ -341,6 +342,7 @@
 			購入価額：<span id="total-payment"></span><br/>
 			評価額　：<span id="market-value"></span><br/>
 			評価損益：<span id="profit"></span><br/>
+			手数料　：<span id="total-fee"></span><br/>
 			<p>
 				<button class="button-normal" onclick="window.open('/history.html')">購入履歴</button>
 				<span style="height: 0; margin: 0; padding: 0;">&nbsp</span>
