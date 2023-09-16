@@ -58,7 +58,7 @@
 						var div = document.getElementById('history');
 						var html = '';
 						html += "<tr><th> 状態 </th><th> 注文ID </th><th> 注文/約定時間 </th><th> 購入数<br/>(BTC) </th><th> 購入単価<br/>(円/BTC) </th><th> 購入価額<br/>(円) </th></tr>";
-						resp.orders.forEach(function(element) {
+						resp.orders.slice().reverse().forEach(function(element) {
 							html += "<tr><td>" + element.status + "</td><td>" + element.order_id + "</td><td>" + element.date + "</td><td>" + element.amount + "</td><td>" + element.price + "</td><td>" + element.purchase + "</td></tr>";
 						});
 						div.innerHTML = html;

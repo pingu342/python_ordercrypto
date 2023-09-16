@@ -76,7 +76,7 @@ since_unix_time = None
 
 while True:
     try:
-        value = prv.get_trade_history(pair=PAIR, order_count=count, since=since_unix_time, order='desc')
+        value = prv.get_trade_history(pair=PAIR, order_count=count, since=since_unix_time, order='asc')
     except Exception as e:
         print(e)
         sys.exit()
